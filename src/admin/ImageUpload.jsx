@@ -96,3 +96,42 @@ export function ImageUpload({ value, onChange, aspect = "1 / 1" }) {
     </div>
   );
 }
+
+/* Galeria com várias imagens (a primeira é a capa). */
+export function MultiImageUpload({ images = [], onChange }) {
+  const list = Array.isArray(images) ? images : [];
+  const add = (src) => src && onChange([...list, src]);
+  const removeAt = (i) => onChange(list.filter((_, idx) => idx !== i));
+  const makeCover = (i) => {
+    const arr = [...list];
+    const [x] = arr.splice(i, 1);
+    arr.unshift(x);
+    onChange(arr);
+  };
+  return (
+    <div>
+      {list.length > 0 && (
+        <div className="adm-gallery">
+          {list.map((src, i) => (
+            <div className="adm-gallery__item" key={i}>
+              <img src={src} alt={"Imagem " + (i + 1)} />
+              {i === 0 && <span className="adm-gallery__cover">Capa</span>}
+              <button type="button" className="adm-gallery__rm" onClick={() => removeAt(i)} title="Remover">
+                ✕
+              </button>
+              {i !== 0 && (
+                <button type="button" className="adm-gallery__mk" onClick={() => makeCover(i)} title="Definir como capa">
+                  ★ capa
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+      <ImageUpload value="" onChange={add} aspect="1 / 1" />
+      <small style={{ color: "var(--g2-muted)", display: "block", marginTop: ".5rem" }}>
+        {list.length > 0 ? `${list.length} imagem(ns). A primeira é a capa — passe o mouse para definir outra.` : "Nenhuma imagem — envie a primeira acima."}
+      </small>
+    </div>
+  );
+}

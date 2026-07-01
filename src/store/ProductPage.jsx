@@ -98,7 +98,9 @@ export function ProductPage({ product, products, settings, onNav, onOpenProduct,
     ),
   };
 
-  const hasImg = !!p.image;
+  const imgs = Array.isArray(p.images) && p.images.length ? p.images : [];
+  const hasImg = imgs.length > 0;
+  const idx = Math.min(activeImg, Math.max(0, imgs.length - 1));
 
   return (
     <main className="g2-pdp">
@@ -135,24 +137,26 @@ export function ProductPage({ product, products, settings, onNav, onOpenProduct,
             })()}
             {hasImg ? (
               <div className="g2-img" style={{ borderRadius: 16, aspectRatio: "1/1" }}>
-                <img src={p.image} alt={p.name} />
+                <img src={imgs[idx]} alt={p.name} />
               </div>
             ) : (
-              <Placeholder label={["frente", "ângulo", "detalhe", "em uso"][activeImg]} hue={p.hue} ratio="1/1" round={16} light={92} style={{ height: "100%" }} />
+              <Placeholder label={["frente", "ângulo", "detalhe", "em uso"][activeImg % 4]} hue={p.hue} ratio="1/1" round={16} light={92} style={{ height: "100%" }} />
             )}
           </div>
           <div className="g2-pdp__thumbs">
-            {[0, 1, 2, 3].map((i) => (
-              <button key={i} className={"g2-pdp__thumb" + (i === activeImg ? " is-active" : "")} onClick={() => setActiveImg(i)}>
-                {hasImg ? (
-                  <div className="g2-img" style={{ aspectRatio: "1/1", borderRadius: 8, opacity: i === activeImg ? 1 : 0.75 }}>
-                    <img src={p.image} alt="" />
-                  </div>
-                ) : (
-                  <Placeholder label="" hue={p.hue} ratio="1/1" round={8} light={i === activeImg ? 88 : 93} />
-                )}
-              </button>
-            ))}
+            {hasImg
+              ? imgs.map((src, i) => (
+                  <button key={i} className={"g2-pdp__thumb" + (i === idx ? " is-active" : "")} onClick={() => setActiveImg(i)}>
+                    <div className="g2-img" style={{ aspectRatio: "1/1", borderRadius: 8, opacity: i === idx ? 1 : 0.75 }}>
+                      <img src={src} alt={"Imagem " + (i + 1)} />
+                    </div>
+                  </button>
+                ))
+              : [0, 1, 2, 3].map((i) => (
+                  <button key={i} className={"g2-pdp__thumb" + (i === activeImg ? " is-active" : "")} onClick={() => setActiveImg(i)}>
+                    <Placeholder label="" hue={p.hue} ratio="1/1" round={8} light={i === activeImg ? 88 : 93} />
+                  </button>
+                ))}
           </div>
         </div>
 

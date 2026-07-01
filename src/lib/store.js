@@ -51,6 +51,7 @@ function normalize(data) {
     installmentsFree: true,
     pixPct: null,
     ...p,
+    images: Array.isArray(p.images) ? p.images : p.image ? [p.image] : [],
     slug: p.slug || slugify(p.name),
   }));
   d.kits = Array.isArray(data.kits) ? data.kits : seed.kits;
@@ -106,8 +107,11 @@ const uid = (prefix) =>
 export function decorateProduct(p, categories) {
   const c = categories.find((cat) => cat.slug === p.cat);
   const parcelas = Number(p.installments) || 3;
+  const images = Array.isArray(p.images) ? p.images : p.image ? [p.image] : [];
   return {
     ...p,
+    images,
+    image: images[0] || "", // capa = primeira imagem
     catName: c ? c.name : p.catName || "",
     hue: c ? c.hue : p.hue ?? 40,
     installments: parcelas,
@@ -149,7 +153,8 @@ export const db = {
       colors: data.colors || [],
       specs: data.specs || [],
       desc: data.desc || "",
-      image: data.image || "",
+      images: Array.isArray(data.images) ? data.images : data.image ? [data.image] : [],
+      image: (Array.isArray(data.images) ? data.images[0] : data.image) || "",
       rating: data.rating != null ? Number(data.rating) : 4.8,
       reviews: data.reviews != null ? Number(data.reviews) : 0,
       stock: data.stock != null ? Number(data.stock) : 0,
@@ -181,6 +186,7 @@ export const db = {
               stock: patch.stock != null ? Number(patch.stock) : p.stock,
               rating: patch.rating != null ? Number(patch.rating) : p.rating,
               reviews: patch.reviews != null ? Number(patch.reviews) : p.reviews,
+              image: patch.images != null ? patch.images[0] || "" : patch.image != null ? patch.image : p.image,
               slug: patch.name ? slugify(patch.name) : p.slug,
             }
           : p

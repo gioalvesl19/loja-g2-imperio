@@ -1,7 +1,7 @@
 /* G2 IMPÉRIO — Admin: gestão de produtos (CRUD completo) */
 import { useState, useMemo } from "react";
 import { brl, discountPct } from "../lib/format.js";
-import { ImageUpload } from "./ImageUpload.jsx";
+import { MultiImageUpload } from "./ImageUpload.jsx";
 
 /* ============ Aba de produtos ============ */
 export function ProductsTab({ store }) {
@@ -195,7 +195,7 @@ function emptyForm(categories) {
     installmentsFree: true,
     pixPct: "",
     badge: "",
-    image: "",
+    images: [],
     active: true,
     rating: "4.8",
     reviews: "0",
@@ -219,7 +219,7 @@ function ProductForm({ product, categories, db, onClose }) {
       installmentsFree: product.installmentsFree !== false,
       pixPct: product.pixPct != null ? String(product.pixPct) : "",
       badge: product.badge || "",
-      image: product.image || "",
+      images: Array.isArray(product.images) ? product.images : product.image ? [product.image] : [],
       active: product.active !== false,
       rating: String(product.rating ?? "4.8"),
       reviews: String(product.reviews ?? 0),
@@ -284,7 +284,7 @@ function ProductForm({ product, categories, db, onClose }) {
       installmentsFree: f.installmentsFree !== false,
       pixPct: f.pixPct !== "" && f.pixPct != null ? Number(f.pixPct) : null,
       badge: f.badge || null,
-      image: f.image,
+      images: f.images,
       active: f.active,
       rating: Number(f.rating) || 0,
       reviews: Number(f.reviews) || 0,
@@ -390,9 +390,9 @@ function ProductForm({ product, categories, db, onClose }) {
           <fieldset className="adm-fieldset">
             <legend>Imagem e avaliação</legend>
             <div className="adm-field">
-              <label>Foto do produto</label>
-              <small>Envie um arquivo do seu dispositivo. Deixe vazio para usar o fundo padrão.</small>
-              <ImageUpload value={f.image} onChange={(v) => set("image", v)} aspect="1 / 1" />
+              <label>Fotos do produto</label>
+              <small>Envie uma ou mais imagens do seu dispositivo. A primeira é a capa. Deixe vazio para usar o fundo padrão.</small>
+              <MultiImageUpload images={f.images} onChange={(v) => set("images", v)} />
             </div>
             <div className="adm-grid2">
               <div className="adm-field">
