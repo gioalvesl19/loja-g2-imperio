@@ -25,7 +25,10 @@ export function ProductPage({ product, products, settings, onNav, onOpenProduct,
   const isOut = info.status === "out";
   const stock = Number(p.stock) || 0;
   const unit = p.price;
-  const pixPrice = +(unit * (1 - (settings.pixDiscountPct || 5) / 100)).toFixed(2);
+  const parcelas = Number(p.installments) || 3;
+  const semJuros = p.installmentsFree !== false;
+  const pixPct = p.pixPct != null ? Number(p.pixPct) : settings.pixDiscountPct || 0;
+  const pixPrice = +(unit * (1 - pixPct / 100)).toFixed(2);
   const off = discountPct(p.price, p.oldPrice);
   const related = products.filter((x) => x.cat === p.cat && x.id !== p.id).slice(0, 6);
   const comments = p.comments || [];
@@ -205,10 +208,15 @@ export function ProductPage({ product, products, settings, onNav, onOpenProduct,
               <strong>{brl(unit)}</strong>
               {off > 0 && <span className="g2-pdp__off">-{off}%</span>}
             </div>
-            <span className="g2-pdp__inst">ou 3x de {brl(unit / 3)} sem juros</span>
-            <span className="g2-pdp__pix">
-              {brl(pixPrice)} no Pix ({settings.pixDiscountPct || 5}% off)
+            <span className="g2-pdp__inst">
+              ou {parcelas}x de {brl(unit / parcelas)}
+              {semJuros ? " sem juros" : ""}
             </span>
+            {pixPct > 0 && (
+              <span className="g2-pdp__pix">
+                {brl(pixPrice)} no Pix ({pixPct}% off)
+              </span>
+            )}
           </div>
 
           <div className="g2-pdp__buyrow">

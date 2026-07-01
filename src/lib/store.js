@@ -47,6 +47,9 @@ function normalize(data) {
     active: true,
     rating: 4.8,
     reviews: 0,
+    installments: 3,
+    installmentsFree: true,
+    pixPct: null,
     ...p,
     slug: p.slug || slugify(p.name),
   }));
@@ -102,11 +105,13 @@ const uid = (prefix) =>
 /** junta o produto com os dados da categoria + campos derivados */
 export function decorateProduct(p, categories) {
   const c = categories.find((cat) => cat.slug === p.cat);
+  const parcelas = Number(p.installments) || 3;
   return {
     ...p,
     catName: c ? c.name : p.catName || "",
     hue: c ? c.hue : p.hue ?? 40,
-    installment: inst(p.price),
+    installments: parcelas,
+    installment: (Number(p.price) || 0) / parcelas,
     slug: p.slug || slugify(p.name),
   };
 }
@@ -148,6 +153,9 @@ export const db = {
       rating: data.rating != null ? Number(data.rating) : 4.8,
       reviews: data.reviews != null ? Number(data.reviews) : 0,
       stock: data.stock != null ? Number(data.stock) : 0,
+      installments: data.installments != null ? Number(data.installments) : 3,
+      installmentsFree: data.installmentsFree !== false,
+      pixPct: data.pixPct != null && data.pixPct !== "" ? Number(data.pixPct) : null,
       active: data.active !== false,
       comments: data.comments || [],
       slug: slugify(data.name || "novo-produto"),

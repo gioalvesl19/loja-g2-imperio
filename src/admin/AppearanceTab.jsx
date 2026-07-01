@@ -1,4 +1,5 @@
-/* G2 IMPÉRIO — Admin: aparência da loja (capas, banner, kit) */
+/* G2 IMPÉRIO — Admin: aparência da loja (barra de anúncio, capas, banner, kit) */
+import { ImageUpload } from "./ImageUpload.jsx";
 
 function CatSelect({ categories, value, onChange }) {
   return (
@@ -23,24 +24,15 @@ function ThemeSelect({ value, onChange }) {
   );
 }
 
-function ImagePreview({ url }) {
-  if (!url) return null;
-  return (
-    <div style={{ marginTop: ".5rem", width: "100%", maxWidth: 260, aspectRatio: "16/7", borderRadius: 8, overflow: "hidden", border: "1px solid var(--g2-border)", background: "var(--g2-surface)" }}>
-      <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={(e) => (e.currentTarget.style.opacity = ".2")} />
-    </div>
-  );
-}
-
 export function AppearanceTab({ store }) {
-  const { hero, banner, kitPromo, categories, db } = store;
+  const { hero, banner, kitPromo, categories, settings, db } = store;
 
   return (
     <>
       <div className="adm-topbar">
         <div>
           <h1>Aparência</h1>
-          <p>Personalize as capas do carrossel, o banner promocional e a chamada de kit. As mudanças aparecem na hora na loja.</p>
+          <p>Personalize a barra de anúncio, as capas do carrossel, o banner e a chamada de kit. As mudanças aparecem na hora na loja.</p>
         </div>
         <div className="adm-actions">
           <button className="g2-btn g2-btn--gold g2-btn--sm" onClick={() => db.addHeroSlide()}>
@@ -50,7 +42,27 @@ export function AppearanceTab({ store }) {
       </div>
 
       <div className="adm-hint">
-        💡 Deixe o campo de imagem vazio para usar o fundo padrão (listrado). Cole a URL de uma foto (ex.: link direto de uma imagem) para usar suas próprias fotos nas capas, banners e produtos.
+        💡 As imagens são enviadas por <b>anexo (arquivo do seu dispositivo)</b> e ficam salvas no navegador. Deixe a imagem vazia para usar o fundo padrão (listrado).
+      </div>
+
+      {/* Barra de anúncio */}
+      <div className="adm-card">
+        <h2>Barra de anúncio (topo do site)</h2>
+        <label className="adm-switch" style={{ marginBottom: "1rem" }}>
+          <input type="checkbox" checked={settings.announcementEnabled !== false} onChange={(e) => db.updateSettings({ announcementEnabled: e.target.checked })} />
+          <i />
+          {settings.announcementEnabled !== false ? "Exibindo a barra" : "Barra oculta"}
+        </label>
+        <div className="adm-grid2">
+          <div className="adm-field">
+            <label>Texto da barra</label>
+            <input className="adm-input" value={settings.announcement || ""} onChange={(e) => db.updateSettings({ announcement: e.target.value })} placeholder="FRETE GRÁTIS acima de R$ 299 · Cupom:" />
+          </div>
+          <div className="adm-field">
+            <label>Cupom (botão copiável)</label>
+            <input className="adm-input" value={settings.coupon || ""} onChange={(e) => db.updateSettings({ coupon: e.target.value.toUpperCase() })} placeholder="G2IMPERIO10 (vazio = sem cupom)" />
+          </div>
+        </div>
       </div>
 
       {/* Capas */}
@@ -78,7 +90,7 @@ export function AppearanceTab({ store }) {
               <label>Subtítulo</label>
               <input className="adm-input" value={s.sub} onChange={(e) => db.updateHeroSlide(s.id, { sub: e.target.value })} />
             </div>
-            <div className="adm-grid3">
+            <div className="adm-grid2">
               <div className="adm-field">
                 <label>Leva para</label>
                 <CatSelect categories={categories} value={s.ctaCat} onChange={(v) => db.updateHeroSlide(s.id, { ctaCat: v })} />
@@ -87,13 +99,12 @@ export function AppearanceTab({ store }) {
                 <label>Tema</label>
                 <ThemeSelect value={s.theme} onChange={(v) => db.updateHeroSlide(s.id, { theme: v })} />
               </div>
-              <div className="adm-field">
-                <label>Imagem (URL)</label>
-                <input className="adm-input" value={s.image} onChange={(e) => db.updateHeroSlide(s.id, { image: e.target.value })} placeholder="https://…" />
-              </div>
             </div>
-            <ImagePreview url={s.image} />
-            <div style={{ marginTop: ".8rem" }}>
+            <div className="adm-field">
+              <label>Imagem da capa</label>
+              <ImageUpload value={s.image} onChange={(v) => db.updateHeroSlide(s.id, { image: v })} aspect="16 / 9" />
+            </div>
+            <div>
               <button className="g2-btn g2-btn--ghost g2-btn--sm" style={{ color: "#b32a2a", borderColor: "#e6b3b3" }} onClick={() => { if (window.confirm("Remover esta capa?")) db.removeHeroSlide(s.id); }}>
                 Remover capa
               </button>
@@ -123,7 +134,7 @@ export function AppearanceTab({ store }) {
           <label>Subtítulo</label>
           <input className="adm-input" value={banner.sub} onChange={(e) => db.setBanner({ sub: e.target.value })} />
         </div>
-        <div className="adm-grid3">
+        <div className="adm-grid2">
           <div className="adm-field">
             <label>Leva para</label>
             <CatSelect categories={categories} value={banner.cat} onChange={(v) => db.setBanner({ cat: v })} />
@@ -132,12 +143,11 @@ export function AppearanceTab({ store }) {
             <label>Tema</label>
             <ThemeSelect value={banner.theme} onChange={(v) => db.setBanner({ theme: v })} />
           </div>
-          <div className="adm-field">
-            <label>Imagem (URL)</label>
-            <input className="adm-input" value={banner.image} onChange={(e) => db.setBanner({ image: e.target.value })} placeholder="https://…" />
-          </div>
         </div>
-        <ImagePreview url={banner.image} />
+        <div className="adm-field">
+          <label>Imagem do banner</label>
+          <ImageUpload value={banner.image} onChange={(v) => db.setBanner({ image: v })} aspect="16 / 7" />
+        </div>
       </div>
 
       {/* Kit promo */}
@@ -162,10 +172,9 @@ export function AppearanceTab({ store }) {
           <textarea className="adm-textarea" style={{ minHeight: 70 }} value={kitPromo.sub} onChange={(e) => db.setKitPromo({ sub: e.target.value })} />
         </div>
         <div className="adm-field">
-          <label>Imagem (URL)</label>
-          <input className="adm-input" value={kitPromo.image} onChange={(e) => db.setKitPromo({ image: e.target.value })} placeholder="https://…" />
+          <label>Imagem da chamada</label>
+          <ImageUpload value={kitPromo.image} onChange={(v) => db.setKitPromo({ image: v })} aspect="16 / 7" />
         </div>
-        <ImagePreview url={kitPromo.image} />
       </div>
     </>
   );

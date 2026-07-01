@@ -1,6 +1,7 @@
 /* G2 IMPÉRIO — Admin: gestão de produtos (CRUD completo) */
 import { useState, useMemo } from "react";
 import { brl, discountPct } from "../lib/format.js";
+import { ImageUpload } from "./ImageUpload.jsx";
 
 /* ============ Aba de produtos ============ */
 export function ProductsTab({ store }) {
@@ -190,6 +191,9 @@ function emptyForm(categories) {
     price: "",
     oldPrice: "",
     stock: "0",
+    installments: "3",
+    installmentsFree: true,
+    pixPct: "",
     badge: "",
     image: "",
     active: true,
@@ -211,6 +215,9 @@ function ProductForm({ product, categories, db, onClose }) {
       price: String(product.price ?? ""),
       oldPrice: product.oldPrice ? String(product.oldPrice) : "",
       stock: String(product.stock ?? 0),
+      installments: String(product.installments ?? 3),
+      installmentsFree: product.installmentsFree !== false,
+      pixPct: product.pixPct != null ? String(product.pixPct) : "",
       badge: product.badge || "",
       image: product.image || "",
       active: product.active !== false,
@@ -273,8 +280,11 @@ function ProductForm({ product, categories, db, onClose }) {
       price: Number(f.price) || 0,
       oldPrice: f.oldPrice ? Number(f.oldPrice) : null,
       stock: Number(f.stock) || 0,
+      installments: Number(f.installments) || 3,
+      installmentsFree: f.installmentsFree !== false,
+      pixPct: f.pixPct !== "" && f.pixPct != null ? Number(f.pixPct) : null,
       badge: f.badge || null,
-      image: f.image.trim(),
+      image: f.image,
       active: f.active,
       rating: Number(f.rating) || 0,
       reviews: Number(f.reviews) || 0,
@@ -337,7 +347,7 @@ function ProductForm({ product, categories, db, onClose }) {
 
           {/* Preço e estoque */}
           <fieldset className="adm-fieldset">
-            <legend>Preço, desconto e estoque</legend>
+            <legend>Preço, desconto, parcelamento e estoque</legend>
             <div className="adm-grid3">
               <div className="adm-field">
                 <label>Preço (R$) *</label>
@@ -354,19 +364,35 @@ function ProductForm({ product, categories, db, onClose }) {
                 <small>0 = esgotado · 1 a 5 = "últimas unidades".</small>
               </div>
             </div>
+            <div className="adm-grid3">
+              <div className="adm-field">
+                <label>Parcelas (nº)</label>
+                <input className="adm-input" type="number" min="1" max="24" step="1" value={f.installments} onChange={(e) => set("installments", e.target.value)} placeholder="3" />
+                <small>{Number(f.price) > 0 ? `${Number(f.installments) || 3}x de ${brl((Number(f.price) || 0) / (Number(f.installments) || 3))}` : "Ex.: 3, 6, 12…"}</small>
+              </div>
+              <div className="adm-field">
+                <label>Juros do parcelamento</label>
+                <label className="adm-switch" style={{ marginTop: ".3rem" }}>
+                  <input type="checkbox" checked={f.installmentsFree} onChange={(e) => set("installmentsFree", e.target.checked)} />
+                  <i />
+                  {f.installmentsFree ? "Sem juros" : "Com juros"}
+                </label>
+              </div>
+              <div className="adm-field">
+                <label>Desconto no Pix (%)</label>
+                <input className="adm-input" type="number" min="0" max="100" step="1" value={f.pixPct} onChange={(e) => set("pixPct", e.target.value)} placeholder="padrão da loja" />
+                <small>Vazio = usa o padrão das Configurações.</small>
+              </div>
+            </div>
           </fieldset>
 
           {/* Imagem e avaliações */}
           <fieldset className="adm-fieldset">
             <legend>Imagem e avaliação</legend>
             <div className="adm-field">
-              <label>URL da imagem (opcional)</label>
-              <input className="adm-input" value={f.image} onChange={(e) => set("image", e.target.value)} placeholder="https://… (deixe vazio para usar o placeholder)" />
-              {f.image ? (
-                <div style={{ marginTop: ".5rem", width: 90, height: 90, borderRadius: 8, overflow: "hidden", border: "1px solid var(--g2-border)" }}>
-                  <img src={f.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={(e) => (e.currentTarget.style.opacity = ".2")} />
-                </div>
-              ) : null}
+              <label>Foto do produto</label>
+              <small>Envie um arquivo do seu dispositivo. Deixe vazio para usar o fundo padrão.</small>
+              <ImageUpload value={f.image} onChange={(v) => set("image", v)} aspect="1 / 1" />
             </div>
             <div className="adm-grid2">
               <div className="adm-field">

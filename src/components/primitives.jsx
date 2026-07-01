@@ -165,7 +165,10 @@ export function ProductCard({ p, onOpen, onAdd, onWish, wished }) {
           {p.oldPrice && <s>{brl(p.oldPrice)}</s>}
           <strong>{brl(p.price)}</strong>
         </div>
-        <span className="g2-card__inst">3x de {brl(p.installment)} sem juros</span>
+        <span className="g2-card__inst">
+          {(p.installments || 3)}x de {brl(p.installment)}
+          {p.installmentsFree !== false ? " sem juros" : ""}
+        </span>
         {info.status === "low" && <span className="g2-card__stock">🔥 {info.label}</span>}
         {info.status === "out" && <span className="g2-card__stock g2-card__stock--out">Sem estoque no momento</span>}
       </div>

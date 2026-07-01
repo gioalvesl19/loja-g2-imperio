@@ -205,6 +205,7 @@ export const SEED_SETTINGS = {
   pixDiscountPct: 5,
   coupon: "G2IMPERIO10",
   announcement: "FRETE GRÁTIS acima de R$ 299  ·  Frete rápido para todo o Brasil  ·  Cupom:",
+  announcementEnabled: true,
   adminPassword: "g2admin", // senha do painel (apenas gate local — troque no painel)
 };
 

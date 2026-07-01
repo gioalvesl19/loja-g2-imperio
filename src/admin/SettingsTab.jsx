@@ -13,8 +13,10 @@ export function SettingsTab({ store }) {
   };
 
   const save = () => {
+    // anúncio/cupom são geridos na aba Aparência — não sobrescrever aqui
+    const { announcement, coupon, announcementEnabled, ...rest } = f;
     db.updateSettings({
-      ...f,
+      ...rest,
       freeShip: Number(f.freeShip) || 0,
       cashbackPct: Number(f.cashbackPct) || 0,
       pixDiscountPct: Number(f.pixDiscountPct) || 0,
@@ -123,18 +125,10 @@ export function SettingsTab({ store }) {
           <div className="adm-field">
             <label>Desconto no Pix (%)</label>
             <input className="adm-input" type="number" min="0" max="100" step="1" value={f.pixDiscountPct} onChange={(e) => set("pixDiscountPct", e.target.value)} />
+            <small>Padrão da loja (pode ser sobrescrito por produto).</small>
           </div>
         </div>
-        <div className="adm-grid2">
-          <div className="adm-field">
-            <label>Cupom de destaque</label>
-            <input className="adm-input" value={f.coupon} onChange={(e) => set("coupon", e.target.value.toUpperCase())} />
-          </div>
-        </div>
-        <div className="adm-field">
-          <label>Texto da barra de anúncio</label>
-          <input className="adm-input" value={f.announcement} onChange={(e) => set("announcement", e.target.value)} />
-        </div>
+        <div className="adm-note">O <b>cupom</b> e o <b>texto da barra de anúncio</b> são editados na aba <b>Aparência</b>.</div>
       </div>
 
       <div className="adm-card">

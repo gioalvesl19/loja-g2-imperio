@@ -23,9 +23,10 @@ function buildNav(categories) {
 /* ---------- Barra de anúncio ---------- */
 export function AnnouncementBar({ onToast, settings }) {
   const [closed, setClosed] = useState(false);
-  if (closed) return null;
-  const coupon = settings.coupon || "G2IMPERIO10";
-  const msg = settings.announcement || "FRETE GRÁTIS · Cashback · Cupom:";
+  if (closed || settings.announcementEnabled === false) return null;
+  const coupon = settings.coupon || "";
+  const msg = settings.announcement || "";
+  if (!msg && !coupon) return null;
   const copy = () => {
     if (navigator.clipboard) navigator.clipboard.writeText(coupon);
     onToast && onToast("📋 Cupom copiado!");
@@ -38,9 +39,11 @@ export function AnnouncementBar({ onToast, settings }) {
             {[0, 1, 2].map((j) => (
               <span key={j} className="g2-ann__item">
                 {msg}{" "}
-                <button className="g2-ann__coupon" onClick={copy}>
-                  {coupon} <em>COPIAR</em>
-                </button>
+                {coupon && (
+                  <button className="g2-ann__coupon" onClick={copy}>
+                    {coupon} <em>COPIAR</em>
+                  </button>
+                )}
               </span>
             ))}
           </div>
