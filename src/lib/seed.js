@@ -201,7 +201,6 @@ export const SEED_SETTINGS = {
   mapUrl:
     "https://maps.apple.com/place?map=explore&place-id=I8A778A6CC32A7435&address=Rua+Tr%C3%A1s+os+Montes%2C+N%C2%B0+93+Quadra+60+Lote+12%2C+Polocentro+1+-+2%C2%B0+Etapa%2C+An%C3%A1polis+-+GO%2C+75130-710%2C+Brazil&coordinate=-16.374370%2C-48.968705&name=G2+Imp%C3%A9rio+An%C3%A1polis-GO",
   freeShip: 299,
-  cashbackPct: 10,
   pixDiscountPct: 5,
   coupon: "G2IMPERIO10",
   announcement: "FRETE GRÁTIS acima de R$ 299  ·  Frete rápido para todo o Brasil  ·  Cupom:",

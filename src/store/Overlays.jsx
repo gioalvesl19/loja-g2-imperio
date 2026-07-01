@@ -23,7 +23,6 @@ export function CartDrawer({ open, items, products, settings, onClose, onQty, on
   const subtotal = items.reduce((s, it) => s + it.price * it.qty, 0);
   const remaining = Math.max(0, FREE_SHIP - subtotal);
   const pct = Math.min(100, (subtotal / FREE_SHIP) * 100);
-  const cashback = +((subtotal * (settings.cashbackPct || 10)) / 100).toFixed(2);
   const suggestions = products.filter((p) => !items.some((it) => it.id === p.id) && (Number(p.stock) || 0) > 0).slice(0, 3);
 
   return (
@@ -112,9 +111,6 @@ export function CartDrawer({ open, items, products, settings, onClose, onQty, on
         )}
 
         <div className="g2-cart__foot">
-          <div className="g2-cart__cashback">
-            💰 Você acumulará <strong>{brl(cashback)}</strong> de cashback
-          </div>
           <div className="g2-cart__subtotal">
             <span>Subtotal</span>
             <strong>{brl(subtotal)}</strong>

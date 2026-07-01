@@ -137,10 +137,9 @@ export function StoreApp({ onAdmin }) {
 
   const checkout = () => {
     const subtotal = cart.reduce((s, it) => s + it.price * it.qty, 0);
-    const cashback = +((subtotal * (settings.cashbackPct || 10)) / 100).toFixed(2);
     const lines = ["Olá, G2 Império! 👑 Quero finalizar minha compra:", ""];
     cart.forEach((it) => lines.push("• " + it.name + (it.variant ? " (" + it.variant + ")" : "") + " — " + it.qty + "x — " + brl(it.price * it.qty)));
-    lines.push("", "Subtotal: " + brl(subtotal), "Cashback a receber: " + brl(cashback), "", "Pode me atender para concluir o pedido?");
+    lines.push("", "Subtotal: " + brl(subtotal), "", "Pode me atender para concluir o pedido?");
     openWhats(settings.whatsapp, lines.join("\n"));
     setCartOpen(false);
     toast("💬 Falando com um atendente no WhatsApp…");

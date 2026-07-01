@@ -83,7 +83,7 @@ function CategoryStrip({ categories, onNav }) {
 function BenefitsMarquee({ settings }) {
   const items = [
     `🚚 Frete grátis acima de R$ ${settings.freeShip}`,
-    `💰 ${settings.cashbackPct}% de Cashback`,
+    "💳 Parcele em até 12x",
     "🔄 Troca fácil em 30 dias",
     "🔒 Compra 100% segura",
     "⭐ +10.000 clientes satisfeitos",
@@ -206,7 +206,7 @@ function Highlights({ settings }) {
     ["ENTREGA RÁPIDA", "Frete expresso para todo o Brasil", "M3 6h14M5 6l1 11h12l1-11"],
     ["COMPRA SEGURA", "Criptografia SSL, seus dados protegidos", "M12 3l8 3v6c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V6z"],
     ["TROCA FÁCIL", "30 dias para troca sem complicação", "M4 4v6h6M20 20v-6h-6M4 10a8 8 0 0 1 15-2M20 14a8 8 0 0 1-15 2"],
-    ["CASHBACK G2", `${settings.cashbackPct}% de volta na próxima compra`, "M12 1v22M5 7h9a3 3 0 0 1 0 6H7a3 3 0 0 0 0 6h10"],
+    ["PARCELE SUA COMPRA", "Em até 12x no cartão de crédito", "M12 1v22M5 7h9a3 3 0 0 1 0 6H7a3 3 0 0 0 0 6h10"],
     ["QUALIDADE GARANTIDA", "Produtos selecionados e testados", "M12 2l3 6 6 1-4.5 4 1 6L12 16l-5.5 3 1-6L3 9l6-1z"],
     ["EMBALAGEM ESPECIAL", "Produtos embalados com cuidado", "M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7"],
   ];

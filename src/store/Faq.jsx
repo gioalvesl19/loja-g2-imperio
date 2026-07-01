@@ -30,11 +30,11 @@ const FAQ_GROUPS = [
     ],
   },
   {
-    title: "Pagamento & Cashback",
+    title: "Pagamento",
     items: [
       ["Quais formas de pagamento são aceitas?", "Cartão de crédito e débito (Visa, Mastercard, Elo, Amex), Pix e boleto. No Pix você ganha 5% de desconto à vista."],
       ["Como parcelar minha compra?", "Em até 3x sem juros no cartão e até 12x com juros da operadora. O simulador de parcelas aparece na finalização."],
-      ["Como funciona o cashback G2?", "A cada compra você acumula 10% do valor pago como crédito G2, válido por 90 dias para usar na próxima compra. O saldo aparece na página do produto, no carrinho e na sua conta."],
+      ["Meus dados de pagamento estão seguros?", "Sim. Todo o pedido é finalizado com um atendente pelo WhatsApp, que envia um link ou dados de pagamento seguros — nunca pedimos senhas ou dados sensíveis por mensagem."],
     ],
   },
   {
@@ -60,7 +60,7 @@ export function Faq({ onNav, onWhats, settings }) {
             <br />
             FREQUENTES
           </h1>
-          <p>Tudo o que você precisa saber sobre pedidos, pagamento, cashback, trocas e garantia. Não achou sua dúvida? Fale com a gente.</p>
+          <p>Tudo o que você precisa saber sobre pedidos, pagamento, entrega, trocas e garantia. Não achou sua dúvida? Fale com a gente.</p>
         </div>
       </section>
 

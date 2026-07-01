@@ -14,11 +14,10 @@ export function SettingsTab({ store }) {
 
   const save = () => {
     // anúncio/cupom são geridos na aba Aparência — não sobrescrever aqui
-    const { announcement, coupon, announcementEnabled, ...rest } = f;
+    const { announcement, coupon, announcementEnabled, cashbackPct, ...rest } = f;
     db.updateSettings({
       ...rest,
       freeShip: Number(f.freeShip) || 0,
-      cashbackPct: Number(f.cashbackPct) || 0,
       pixDiscountPct: Number(f.pixDiscountPct) || 0,
     });
     setSaved(true);
@@ -113,14 +112,10 @@ export function SettingsTab({ store }) {
 
       <div className="adm-card">
         <h2>Regras comerciais</h2>
-        <div className="adm-grid3">
+        <div className="adm-grid2">
           <div className="adm-field">
             <label>Frete grátis a partir de (R$)</label>
             <input className="adm-input" type="number" min="0" step="1" value={f.freeShip} onChange={(e) => set("freeShip", e.target.value)} />
-          </div>
-          <div className="adm-field">
-            <label>Cashback (%)</label>
-            <input className="adm-input" type="number" min="0" max="100" step="1" value={f.cashbackPct} onChange={(e) => set("cashbackPct", e.target.value)} />
           </div>
           <div className="adm-field">
             <label>Desconto no Pix (%)</label>

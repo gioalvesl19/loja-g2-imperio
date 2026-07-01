@@ -35,16 +35,6 @@ export const POLICIES = [
     ],
   },
   {
-    slug: "cashback",
-    title: "Programa de Cashback",
-    intro: "A cada compra, parte do valor volta pra você.",
-    sections: [
-      ["Como funciona", "Você acumula um percentual do valor pago como crédito G2 para usar em compras futuras."],
-      ["Validade", "O crédito é válido por 90 dias a partir da data da compra."],
-      ["Como usar", "Informe ao nosso atendimento no momento da compra para aplicar o seu saldo de cashback."],
-    ],
-  },
-  {
     slug: "promocoes",
     title: "Promoções",
     intro: "Ofertas, cupons e condições especiais da G2 Império.",

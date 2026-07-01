@@ -32,7 +32,7 @@ npm run preview   # pré-visualiza a build de produção
 - **Catálogo** com filtros (ordenação, faixa de preço, promoção, lançamento, em estoque).
 - **Página do produto (PDP)** com galeria, cores, seletor de quantidade (limitado ao estoque), abas (descrição, especificações, cuidados, trocas e **avaliações**), preço no Pix e botões de comprar/WhatsApp.
 - **Carrinho** lateral com barra de frete grátis, cross-sell e **checkout via WhatsApp**.
-- **Páginas de políticas** (privacidade, trocas, entrega, cashback, promoções, termos).
+- **Páginas de políticas** (privacidade, trocas, entrega, promoções, termos).
 - **Busca**, **lista de desejos**, **menu mobile** e **barra inferior mobile**.
 - Indicadores de **estoque**: "Últimas X unidades" e "Esgotado" (com botão desabilitado).
 - Contato com **2 WhatsApp**, **endereço com link do mapa** e **Instagram**.
@@ -56,7 +56,7 @@ Tudo o que foi pedido, completo:
 - **Categorias** — CRUD com cor (matiz), rótulo curto e slug; exclusão protegida quando há produtos vinculados.
 - **Aparência** — personalize as **capas do carrossel**, o **banner promocional** e a **chamada de kit** (textos, tema, categoria de destino e **imagens por URL**).
 - **Avaliações** — visão consolidada de todos os comentários, com adição/remoção.
-- **Configurações** — nome da loja, **2 WhatsApp** (número + exibição), **Instagram**, **endereço + link do mapa**, frete grátis, % de cashback, % de desconto no Pix, cupom, barra de anúncio e senha do painel.
+- **Configurações** — nome da loja, **2 WhatsApp** (número + exibição), **Instagram**, **endereço + link do mapa**, frete grátis, % de desconto no Pix, cupom, barra de anúncio e senha do painel.
 - **Backup** — exportar/importar JSON e restaurar catálogo inicial.
 
 Todas as alterações do painel refletem **na hora** na loja (mesmo entre abas abertas).
@@ -83,7 +83,7 @@ src/
 Antes de usar em produção, confira em **Admin → Configurações**:
 
 - **WhatsApp**: número no formato `55` + DDD + número (ex.: `5562992175676`). O WhatsApp 1 recebe os pedidos do checkout.
-- **Instagram, endereço + link do mapa, frete grátis, cashback, cupom** e demais regras comerciais.
+- **Instagram, endereço + link do mapa, frete grátis, cupom** e demais regras comerciais.
 
 ## 🗺️ Próximos passos (Supabase)
 
