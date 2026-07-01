@@ -6,12 +6,12 @@ import { AnnouncementBar, Header, Footer, BottomBar } from "../components/layout
 import { Home } from "./Home.jsx";
 import { Collection } from "./Collection.jsx";
 import { ProductPage } from "./ProductPage.jsx";
-import { About } from "./About.jsx";
 import { Faq } from "./Faq.jsx";
+import { PolicyPage } from "./PolicyPage.jsx";
 import { CartDrawer, SearchModal, KitBuilder, MobileMenu, Toasts } from "./Overlays.jsx";
 
 export function StoreApp({ onAdmin }) {
-  const { products, categories, kits, reviews, blog, settings, db } = useStore();
+  const { products, categories, reviews, blog, settings, hero, banner, kitPromo, db } = useStore();
 
   const [route, setRoute] = useState({ view: "home" });
   const [cart, setCart] = useState(() => loadCart());
@@ -158,12 +158,12 @@ export function StoreApp({ onAdmin }) {
         onSearch={() => setSearchOpen(true)}
         onCart={() => setCartOpen(true)}
         onMenu={() => setMenuOpen(true)}
+        onAccount={onAdmin}
         onWish={() => toast("Sua lista de desejos tem " + wishlist.size + " item(ns)")}
       />
 
-      {route.view === "home" && <Home products={products} categories={categories} reviews={reviews} blog={blog} settings={settings} onNav={nav} onOpenProduct={openProduct} onAdd={addToCart} onWish={toggleWish} wishlist={wishlist} onKit={() => setKitOpen(true)} />}
+      {route.view === "home" && <Home products={products} categories={categories} reviews={reviews} blog={blog} settings={settings} hero={hero} banner={banner} kitPromo={kitPromo} onNav={nav} onOpenProduct={openProduct} onAdd={addToCart} onWish={toggleWish} wishlist={wishlist} onKit={() => setKitOpen(true)} />}
       {route.view === "collection" && <Collection cat={route.cat} title={route.title} products={products} categories={categories} onNav={nav} onOpenProduct={openProduct} onAdd={addToCart} onWish={toggleWish} wishlist={wishlist} />}
-      {route.view === "about" && <About onNav={nav} categories={categories} />}
       {route.view === "faq" && (
         <Faq
           onNav={nav}
@@ -174,11 +174,22 @@ export function StoreApp({ onAdmin }) {
           }}
         />
       )}
+      {route.view === "policy" && (
+        <PolicyPage
+          slug={route.slug}
+          settings={settings}
+          onNav={nav}
+          onWhats={() => {
+            openWhats(settings.whatsapp, "Olá, G2 Império! 👑 Tenho uma dúvida e gostaria de atendimento.");
+            toast("💬 Abrindo o WhatsApp…");
+          }}
+        />
+      )}
       {route.view === "product" && <ProductPage product={route.product} products={products} settings={settings} onNav={nav} onOpenProduct={openProduct} onAdd={addToCart} onWish={toggleWish} wishlist={wishlist} onBuyNow={buyNow} />}
 
-      <Footer onNav={nav} onToast={toast} categories={categories} settings={settings} onAdmin={onAdmin} />
+      <Footer onNav={nav} categories={categories} settings={settings} onAdmin={onAdmin} />
 
-      <BottomBar view={route.view} cartCount={cartCount} onNav={nav} onSearch={() => setSearchOpen(true)} onKit={() => setKitOpen(true)} onCart={() => setCartOpen(true)} />
+      <BottomBar view={route.view} cartCount={cartCount} onNav={nav} onSearch={() => setSearchOpen(true)} onKit={() => setKitOpen(true)} onCart={() => setCartOpen(true)} onAccount={onAdmin} />
 
       <CartDrawer
         open={cartOpen}

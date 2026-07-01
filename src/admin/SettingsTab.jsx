@@ -71,19 +71,40 @@ export function SettingsTab({ store }) {
             <input className="adm-input" value={f.storeName} onChange={(e) => set("storeName", e.target.value)} />
           </div>
           <div className="adm-field">
-            <label>E-mail de contato</label>
-            <input className="adm-input" value={f.email} onChange={(e) => set("email", e.target.value)} />
+            <label>Instagram (URL)</label>
+            <input className="adm-input" value={f.instagram} onChange={(e) => set("instagram", e.target.value)} placeholder="https://www.instagram.com/g2_imperio/" />
           </div>
         </div>
         <div className="adm-grid2">
           <div className="adm-field">
-            <label>WhatsApp (só números: 55 + DDD + número)</label>
-            <input className="adm-input" value={f.whatsapp} onChange={(e) => set("whatsapp", e.target.value.replace(/\D/g, ""))} placeholder="5511999990000" />
-            <small>Usado no botão "Comprar no WhatsApp" e no checkout.</small>
+            <label>WhatsApp 1 — números (55 + DDD + número)</label>
+            <input className="adm-input" value={f.whatsapp} onChange={(e) => set("whatsapp", e.target.value.replace(/\D/g, ""))} placeholder="5562992175676" />
+            <small>Recebe os pedidos do checkout e dos botões.</small>
           </div>
           <div className="adm-field">
-            <label>Telefone exibido</label>
-            <input className="adm-input" value={f.phoneDisplay} onChange={(e) => set("phoneDisplay", e.target.value)} placeholder="(11) 9 9999-0000" />
+            <label>WhatsApp 1 — exibição</label>
+            <input className="adm-input" value={f.whatsappDisplay} onChange={(e) => set("whatsappDisplay", e.target.value)} placeholder="(62) 99217-5676" />
+          </div>
+        </div>
+        <div className="adm-grid2">
+          <div className="adm-field">
+            <label>WhatsApp 2 — números (opcional)</label>
+            <input className="adm-input" value={f.whatsapp2} onChange={(e) => set("whatsapp2", e.target.value.replace(/\D/g, ""))} placeholder="5562992120122" />
+          </div>
+          <div className="adm-field">
+            <label>WhatsApp 2 — exibição</label>
+            <input className="adm-input" value={f.whatsapp2Display} onChange={(e) => set("whatsapp2Display", e.target.value)} placeholder="(62) 99212-0122" />
+          </div>
+        </div>
+        <div className="adm-grid2">
+          <div className="adm-field">
+            <label>Endereço da loja</label>
+            <textarea className="adm-textarea" style={{ minHeight: 80 }} value={f.address} onChange={(e) => set("address", e.target.value)} placeholder="Rua..., Bairro, Cidade - UF, CEP" />
+            <small>Uma linha por parte do endereço.</small>
+          </div>
+          <div className="adm-field">
+            <label>Link do mapa</label>
+            <input className="adm-input" value={f.mapUrl} onChange={(e) => set("mapUrl", e.target.value)} placeholder="https://maps.apple.com/..." />
           </div>
         </div>
       </div>

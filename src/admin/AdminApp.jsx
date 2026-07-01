@@ -4,6 +4,7 @@ import { useStore } from "../lib/store.js";
 import { Dashboard } from "./Dashboard.jsx";
 import { ProductsTab } from "./ProductsTab.jsx";
 import { CategoriesTab } from "./CategoriesTab.jsx";
+import { AppearanceTab } from "./AppearanceTab.jsx";
 import { CommentsTab } from "./CommentsTab.jsx";
 import { SettingsTab } from "./SettingsTab.jsx";
 
@@ -13,6 +14,7 @@ const ICONS = {
   dash: "M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z",
   prod: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4",
   cat: "M4 5h16M4 12h16M4 19h16",
+  appear: "M3 5h18v14H3zM3 16l5-5 4 4 3-3 6 6M8.5 9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z",
   rev: "M12 2l3 6 6 1-4.5 4 1 6L12 16l-5.5 3 1-6L3 9l6-1z",
   set: "M12 15a3 3 0 100-6 3 3 0 000 6zM19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-2.9 1.2V21a2 2 0 11-4 0v-.1A1.7 1.7 0 004.6 19l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00-1.2-2.9H0a2 2 0 110-4h.1A1.7 1.7 0 001.3 4.6l-.1-.1A2 2 0 114 1.7l.1.1a1.7 1.7 0 001.9.3H6a1.7 1.7 0 001-1.5V0a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V6a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z",
 };
@@ -85,6 +87,7 @@ export function AdminApp({ onExit }) {
     ["dash", "Painel", ICONS.dash],
     ["prod", "Produtos", ICONS.prod],
     ["cat", "Categorias", ICONS.cat],
+    ["appear", "Aparência", ICONS.appear],
     ["rev", "Avaliações", ICONS.rev],
     ["set", "Configurações", ICONS.set],
   ];
@@ -139,8 +142,9 @@ export function AdminApp({ onExit }) {
           {tab === "dash" && <Dashboard store={store} onGo={go} />}
           {tab === "prod" && <ProductsTab store={store} />}
           {tab === "cat" && <CategoriesTab store={store} />}
+          {tab === "appear" && <AppearanceTab store={store} />}
           {tab === "rev" && <CommentsTab store={store} />}
-          {tab === "set" && <SettingsTab store={store} onExit={onExit} />}
+          {tab === "set" && <SettingsTab store={store} />}
         </main>
       </div>
     </div>

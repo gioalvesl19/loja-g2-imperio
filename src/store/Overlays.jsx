@@ -408,16 +408,7 @@ export function MobileMenu({ open, categories, settings, onClose, onNav }) {
               {t}
             </button>
           ))}
-          <h5>A {settings.storeName}</h5>
-          <button
-            className="g2-mobmenu__link"
-            onClick={() => {
-              onNav({ view: "about" });
-              onClose();
-            }}
-          >
-            Sobre nós
-          </button>
+          <h5>AJUDA</h5>
           <button
             className="g2-mobmenu__link"
             onClick={() => {

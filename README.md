@@ -19,8 +19,8 @@ npm run preview   # pré-visualiza a build de produção
 
 | Rota | Descrição |
 |------|-----------|
-| `/` | Loja (vitrine, catálogo, produto, carrinho, sobre, FAQ) |
-| `/admin` | Painel do administrador (senha padrão: **`g2admin`**) |
+| `/` | Loja (vitrine, catálogo, produto, carrinho, FAQ, políticas) |
+| `/admin` | Painel do administrador (senha padrão: **`g2admin`**) — também abre pelo ícone de pessoa no topo |
 
 > A senha do painel pode ser alterada em **Admin → Configurações**. É uma proteção **local** (não é autenticação de servidor) — quando o Supabase for conectado, a autenticação migra para lá.
 
@@ -30,10 +30,12 @@ npm run preview   # pré-visualiza a build de produção
 
 - **Vitrine** com hero rotativo, categorias, marquees de benefícios, vitrines por categoria, avaliações, blog e montador de kit.
 - **Catálogo** com filtros (ordenação, faixa de preço, promoção, lançamento, em estoque).
-- **Página do produto (PDP)** com galeria, cores, seletor de quantidade (limitado ao estoque), assinatura, cashback, abas (descrição, especificações, cuidados, trocas e **avaliações**).
-- **Carrinho** lateral com barra de frete grátis, cross-sell, cashback e **checkout via WhatsApp**.
+- **Página do produto (PDP)** com galeria, cores, seletor de quantidade (limitado ao estoque), abas (descrição, especificações, cuidados, trocas e **avaliações**), preço no Pix e botões de comprar/WhatsApp.
+- **Carrinho** lateral com barra de frete grátis, cross-sell e **checkout via WhatsApp**.
+- **Páginas de políticas** (privacidade, trocas, entrega, cashback, promoções, termos).
 - **Busca**, **lista de desejos**, **menu mobile** e **barra inferior mobile**.
 - Indicadores de **estoque**: "Últimas X unidades" e "Esgotado" (com botão desabilitado).
+- Contato com **2 WhatsApp**, **endereço com link do mapa** e **Instagram**.
 
 ## 🛠️ Painel administrativo (`/admin`)
 
@@ -52,8 +54,9 @@ Tudo o que foi pedido, completo:
   - **Imagem** (URL opcional; usa placeholder se vazio)
   - **Ativo/Inativo**, além de **duplicar** e **excluir**
 - **Categorias** — CRUD com cor (matiz), rótulo curto e slug; exclusão protegida quando há produtos vinculados.
+- **Aparência** — personalize as **capas do carrossel**, o **banner promocional** e a **chamada de kit** (textos, tema, categoria de destino e **imagens por URL**).
 - **Avaliações** — visão consolidada de todos os comentários, com adição/remoção.
-- **Configurações** — nome da loja, WhatsApp, e-mail, telefone, frete grátis, % de cashback, % de desconto no Pix, cupom, barra de anúncio e senha do painel.
+- **Configurações** — nome da loja, **2 WhatsApp** (número + exibição), **Instagram**, **endereço + link do mapa**, frete grátis, % de cashback, % de desconto no Pix, cupom, barra de anúncio e senha do painel.
 - **Backup** — exportar/importar JSON e restaurar catálogo inicial.
 
 Todas as alterações do painel refletem **na hora** na loja (mesmo entre abas abertas).
@@ -77,10 +80,10 @@ src/
 
 ## ⚙️ Configuração importante
 
-Antes de usar em produção, ajuste em **Admin → Configurações**:
+Antes de usar em produção, confira em **Admin → Configurações**:
 
-- **WhatsApp**: número no formato `55` + DDD + número (ex.: `5511999990000`). É o número que recebe os pedidos.
-- **E-mail, telefone, frete grátis, cashback, cupom** e demais regras comerciais.
+- **WhatsApp**: número no formato `55` + DDD + número (ex.: `5562992175676`). O WhatsApp 1 recebe os pedidos do checkout.
+- **Instagram, endereço + link do mapa, frete grátis, cashback, cupom** e demais regras comerciais.
 
 ## 🗺️ Próximos passos (Supabase)
 

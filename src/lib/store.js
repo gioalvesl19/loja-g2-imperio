@@ -7,7 +7,7 @@ import { useSyncExternalStore, useMemo } from "react";
 import { makeSeed } from "./seed.js";
 import { slugify, installment as inst } from "./format.js";
 
-const KEY = "g2_imperio_data_v1";
+const KEY = "g2_imperio_data_v2";
 const CART_KEY = "g2_imperio_cart_v1";
 
 /* ---------------- estado + persistência ---------------- */
@@ -53,6 +53,9 @@ function normalize(data) {
   d.kits = Array.isArray(data.kits) ? data.kits : seed.kits;
   d.reviews = Array.isArray(data.reviews) ? data.reviews : seed.reviews;
   d.blog = Array.isArray(data.blog) ? data.blog : seed.blog;
+  d.hero = Array.isArray(data.hero) && data.hero.length ? data.hero : seed.hero;
+  d.banner = { ...seed.banner, ...(data.banner || {}) };
+  d.kitPromo = { ...seed.kitPromo, ...(data.kitPromo || {}) };
   return d;
 }
 
@@ -250,6 +253,27 @@ export const db = {
     return true;
   },
 
+  /* -------- aparência (capas, banner, kit) -------- */
+  setHero(hero) {
+    commit({ ...state, hero });
+  },
+  addHeroSlide() {
+    const slide = { id: uid("h"), theme: "dark", kicker: "NOVIDADE", title: "NOVA CAPA", sub: "", ctaLabel: "VER MAIS", ctaCat: state.categories[0] ? state.categories[0].slug : "promocoes", image: "", hue: 42 };
+    commit({ ...state, hero: [...state.hero, slide] });
+  },
+  updateHeroSlide(id, patch) {
+    commit({ ...state, hero: state.hero.map((h) => (h.id === id ? { ...h, ...patch } : h)) });
+  },
+  removeHeroSlide(id) {
+    commit({ ...state, hero: state.hero.filter((h) => h.id !== id) });
+  },
+  setBanner(patch) {
+    commit({ ...state, banner: { ...state.banner, ...patch } });
+  },
+  setKitPromo(patch) {
+    commit({ ...state, kitPromo: { ...state.kitPromo, ...patch } });
+  },
+
   /* -------- configurações -------- */
   updateSettings(patch) {
     commit({ ...state, settings: { ...state.settings, ...patch } });
@@ -289,6 +313,9 @@ export function useStore() {
       kits: data.kits,
       reviews: data.reviews,
       blog: data.blog,
+      hero: data.hero,
+      banner: data.banner,
+      kitPromo: data.kitPromo,
       db,
     };
   }, [data]);

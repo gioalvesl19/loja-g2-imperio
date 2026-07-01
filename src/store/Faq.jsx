@@ -88,12 +88,11 @@ export function Faq({ onNav, onWhats, settings }) {
                 <WhatsIcon /> FALAR NO WHATSAPP
               </span>
             </Btn>
-            <a className="g2-faqpage__mail" href={"mailto:" + settings.email}>
-              {settings.email}
-            </a>
-            <button className="g2-faqpage__link" onClick={() => onNav({ view: "about" })}>
-              Conheça a G2 Império →
-            </button>
+            {settings.instagram && (
+              <a className="g2-faqpage__mail" href={settings.instagram} target="_blank" rel="noopener noreferrer">
+                @g2_imperio no Instagram
+              </a>
+            )}
           </div>
         </aside>
       </section>

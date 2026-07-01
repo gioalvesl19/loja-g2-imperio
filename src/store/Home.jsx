@@ -3,52 +3,64 @@ import { useState, useEffect } from "react";
 import { Btn, Placeholder, ProductCard, Stars } from "../components/primitives.jsx";
 import { Rail } from "../components/Rail.jsx";
 
-/* ---------- Carrossel do topo ---------- */
-const SLIDES = [
-  { theme: "dark", kicker: "ATÉ 30% OFF", title: "KITS COM DESCONTÃO & BRINDES INCLUSOS", cta: "APROVEITE AGORA", ctaVar: "accent", to: { view: "collection", cat: "promocoes", title: "Kits e Combos" }, hue: 42, ph: "composição de produtos" },
-  { theme: "gold", kicker: "NOVIDADE", title: "NOVOS RELÓGIOS CHEGARAM", sub: "Estilo e precisão para o seu dia a dia.", cta: "VER COLEÇÃO", ctaVar: "dark", to: { view: "collection", cat: "relogios" }, hue: 45, ph: "relógio em destaque" },
-  { theme: "dark", kicker: "PREMIUM", title: "FONES & CAIXAS DE SOM", sub: "Sua trilha sonora com muito estilo.", cta: "COMPRAR AGORA", ctaVar: "accent", to: { view: "collection", cat: "som-fones" }, hue: 0, ph: "fone over-ear" },
-  { theme: "light", kicker: "PARA TODOS OS ESTILOS", title: "MOCHILAS & BOLSAS G2", sub: "Praticidade e estilo para onde for.", cta: "EXPLORAR", ctaVar: "dark", to: { view: "collection", cat: "mochilas" }, hue: 210, ph: "mochila urbana" },
-];
+/* ---------- Carrossel do topo (capas editáveis no admin) ---------- */
+function heroVariant(theme) {
+  return theme === "gold" || theme === "light" ? "dark" : "accent";
+}
 
-function Hero({ onNav }) {
+function Hero({ slides, onNav }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
+  const n = slides.length;
   useEffect(() => {
-    if (paused) return;
-    const t = setInterval(() => setI((v) => (v + 1) % SLIDES.length), 5000);
+    if (paused || n <= 1) return;
+    const t = setInterval(() => setI((v) => (v + 1) % n), 5000);
     return () => clearInterval(t);
-  }, [paused, i]);
+  }, [paused, i, n]);
+  useEffect(() => {
+    if (i >= n) setI(0);
+  }, [n, i]);
+  if (n === 0) return null;
   return (
     <section className="g2-hero" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
       <div className="g2-hero__track" style={{ transform: `translateX(${-i * 100}%)` }}>
-        {SLIDES.map((s, k) => (
-          <div className={"g2-hero__slide g2-hero__slide--" + s.theme} key={k}>
+        {slides.map((s, k) => (
+          <div className={"g2-hero__slide g2-hero__slide--" + s.theme} key={s.id || k}>
             <div className="g2-hero__txt">
               <span className="g2-hero__kicker">{s.kicker}</span>
               <h2 className="g2-hero__title">{s.title}</h2>
               {s.sub && <p className="g2-hero__sub">{s.sub}</p>}
-              <Btn variant={s.ctaVar} size="lg" onClick={() => onNav(s.to)}>
-                {s.cta} →
+              <Btn variant={heroVariant(s.theme)} size="lg" onClick={() => onNav({ view: "collection", cat: s.ctaCat || "promocoes" })}>
+                {s.ctaLabel} →
               </Btn>
             </div>
             <div className="g2-hero__media">
-              <Placeholder label={s.ph} hue={s.hue} ratio="auto" light={s.theme === "light" ? 90 : 30} sat={s.theme === "gold" ? 30 : 14} style={{ height: "100%" }} />
+              {s.image ? (
+                <div className="g2-img" style={{ height: "100%" }}>
+                  <img src={s.image} alt={s.title} />
+                </div>
+              ) : (
+                <Placeholder label="capa" hue={s.hue} ratio="auto" light={s.theme === "light" ? 90 : 30} sat={s.theme === "gold" ? 30 : 14} style={{ height: "100%" }} />
+              )}
             </div>
           </div>
         ))}
       </div>
-      <button className="g2-hero__nav g2-hero__nav--prev" onClick={() => setI((i - 1 + SLIDES.length) % SLIDES.length)} aria-label="Anterior">
-        ‹
-      </button>
-      <button className="g2-hero__nav g2-hero__nav--next" onClick={() => setI((i + 1) % SLIDES.length)} aria-label="Próximo">
-        ›
-      </button>
-      <div className="g2-hero__dots">
-        {SLIDES.map((_, k) => (
-          <button key={k} className={k === i ? "is-on" : ""} onClick={() => setI(k)} aria-label={"Slide " + (k + 1)} />
-        ))}
-      </div>
+      {n > 1 && (
+        <>
+          <button className="g2-hero__nav g2-hero__nav--prev" onClick={() => setI((i - 1 + n) % n)} aria-label="Anterior">
+            ‹
+          </button>
+          <button className="g2-hero__nav g2-hero__nav--next" onClick={() => setI((i + 1) % n)} aria-label="Próximo">
+            ›
+          </button>
+          <div className="g2-hero__dots">
+            {slides.map((_, k) => (
+              <button key={k} className={k === i ? "is-on" : ""} onClick={() => setI(k)} aria-label={"Slide " + (k + 1)} />
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }
@@ -116,16 +128,23 @@ function Showcase({ title, sub, cat, products, onNav, onOpenProduct, onAdd, onWi
   );
 }
 
-function Banner({ kicker, title, sub, cta, theme = "dark", hue = 42, ph, onClick }) {
+function Banner({ banner, onNav }) {
+  const theme = banner.theme || "dark";
   return (
-    <section className={"g2-banner g2-banner--" + theme} onClick={onClick}>
-      <Placeholder label={ph} hue={hue} ratio="auto" light={theme === "light" ? 88 : 26} sat={16} style={{ position: "absolute", inset: 0 }} />
+    <section className={"g2-banner g2-banner--" + theme} onClick={() => onNav({ view: "collection", cat: banner.cat || "promocoes" })}>
+      {banner.image ? (
+        <div className="g2-img" style={{ position: "absolute", inset: 0 }}>
+          <img src={banner.image} alt={banner.title} />
+        </div>
+      ) : (
+        <Placeholder label="banner" hue={banner.hue || 42} ratio="auto" light={theme === "light" ? 88 : 26} sat={16} style={{ position: "absolute", inset: 0 }} />
+      )}
       <div className="g2-banner__in">
-        {kicker && <span className="g2-banner__kicker">{kicker}</span>}
-        <h2 className="g2-banner__title">{title}</h2>
-        {sub && <p>{sub}</p>}
+        {banner.kicker && <span className="g2-banner__kicker">{banner.kicker}</span>}
+        <h2 className="g2-banner__title">{banner.title}</h2>
+        {banner.sub && <p>{banner.sub}</p>}
         <Btn variant={theme === "gold" ? "dark" : "gold"} size="lg">
-          {cta} →
+          {banner.ctaLabel} →
         </Btn>
       </div>
     </section>
@@ -240,34 +259,41 @@ function BlogSection({ blog }) {
   );
 }
 
-function KitPromo({ onKit }) {
+function KitPromo({ data, onKit }) {
   return (
     <section className="g2-kitpromo" onClick={onKit}>
-      <Placeholder label="lifestyle escuro" hue={42} ratio="auto" light={22} sat={16} style={{ position: "absolute", inset: 0 }} />
+      {data.image ? (
+        <div className="g2-img" style={{ position: "absolute", inset: 0 }}>
+          <img src={data.image} alt={data.title} />
+        </div>
+      ) : (
+        <Placeholder label="lifestyle escuro" hue={42} ratio="auto" light={22} sat={16} style={{ position: "absolute", inset: 0 }} />
+      )}
       <div className="g2-kitpromo__in">
-        <span className="g2-banner__kicker">MONTE SEU PACK</span>
-        <h2 className="g2-banner__title">MONTE SEU KIT PERFEITO</h2>
-        <p>Já selecionamos os favoritos, mas você pode combinar como quiser — e ganhar até 15% OFF + brinde.</p>
+        <span className="g2-banner__kicker">{data.kicker}</span>
+        <h2 className="g2-banner__title">{data.title}</h2>
+        <p>{data.sub}</p>
         <Btn variant="gold" size="lg">
-          MONTAR KIT ⚡
+          {data.ctaLabel}
         </Btn>
       </div>
     </section>
   );
 }
 
-export function Home({ products, categories, reviews, blog, settings, onNav, onOpenProduct, onAdd, onWish, wishlist, onKit }) {
+export function Home({ products, categories, reviews, blog, settings, hero, banner, kitPromo, onNav, onOpenProduct, onAdd, onWish, wishlist, onKit }) {
   const share = { products, onNav, onOpenProduct, onAdd, onWish, wishlist };
+  const showcaseCats = categories.slice(0, 3);
   return (
     <main className="g2-home">
-      <Hero onNav={onNav} />
+      <Hero slides={hero} onNav={onNav} />
       <CategoryStrip categories={categories} onNav={onNav} />
       <BenefitsMarquee settings={settings} />
-      <Showcase title="ÓCULOS G2" sub="Proteção UV com muito estilo." cat="oculos" {...share} />
-      <Showcase title="RELÓGIOS G2" sub="Pontualidade com elegância." cat="relogios" {...share} />
-      <KitPromo onKit={onKit} />
-      <Showcase title="SOM & FONES G2" sub="Sua trilha sonora com muito estilo." cat="som-fones" {...share} />
-      <Banner kicker="PRATICIDADE E ESTILO" title="BOLSAS & MALAS G2" sub="Para onde for, com a sua atitude." cta="VER COLEÇÃO" theme="light" hue={25} ph="bolsa tote premium" onClick={() => onNav({ view: "collection", cat: "bolsas-malas" })} />
+      {showcaseCats[0] && <Showcase title={showcaseCats[0].name.toUpperCase()} sub="Seleção especial da G2 Império." cat={showcaseCats[0].slug} {...share} />}
+      {showcaseCats[1] && <Showcase title={showcaseCats[1].name.toUpperCase()} sub="Os favoritos da categoria." cat={showcaseCats[1].slug} {...share} />}
+      <KitPromo data={kitPromo} onKit={onKit} />
+      {showcaseCats[2] && <Showcase title={showcaseCats[2].name.toUpperCase()} sub="Destaques que você vai amar." cat={showcaseCats[2].slug} {...share} />}
+      <Banner banner={banner} onNav={onNav} />
       <ReviewsSection reviews={reviews} />
       <Highlights settings={settings} />
       <BlogSection blog={blog} />

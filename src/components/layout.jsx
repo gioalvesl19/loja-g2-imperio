@@ -1,6 +1,7 @@
 /* G2 IMPÉRIO — layout: AnnouncementBar, Header, Footer, BottomBar, Logo */
 import { useState, useEffect, useRef } from "react";
-import { Btn, Placeholder } from "./primitives.jsx";
+import { Placeholder } from "./primitives.jsx";
+import { POLICY_LINKS } from "../store/policies.js";
 
 /* subitens ricos para as categorias padrão (apenas cosmético no cabeçalho) */
 const SUBITEMS = {
@@ -15,14 +16,7 @@ function buildNav(categories) {
     nav.push({ label: c.name, cat: c.slug, items: SUBITEMS[c.slug] || ["Ver Todos"] });
   });
   nav.push({ label: "Mais Produtos", mega: true });
-  nav.push({
-    label: "Sobre nós",
-    view: "about",
-    links: [
-      ["Sobre nós", { view: "about" }],
-      ["Perguntas Frequentes", { view: "faq" }],
-    ],
-  });
+  nav.push({ label: "Perguntas Frequentes", view: "faq" });
   return nav;
 }
 
@@ -77,7 +71,7 @@ export function Logo({ onClick, light, name = "G2 IMPÉRIO" }) {
 }
 
 /* ---------- Cabeçalho ---------- */
-export function Header({ cartCount, wishCount, onNav, onSearch, onCart, onMenu, onWish, categories, settings }) {
+export function Header({ cartCount, wishCount, onNav, onSearch, onCart, onMenu, onWish, onAccount, categories, settings }) {
   const [open, setOpen] = useState(null);
   const [hidden, setHidden] = useState(false);
   const [solid, setSolid] = useState(false);
@@ -115,12 +109,12 @@ export function Header({ cartCount, wishCount, onNav, onSearch, onCart, onMenu, 
         <Logo onClick={() => onNav({ view: "home" })} name={settings.storeName} />
 
         <div className="g2-head__right">
-          <button className="g2-iconbtn g2-head__acct" aria-label="Conta">
+          <button className="g2-iconbtn g2-head__acct" onClick={onAccount} aria-label="Administrador" title="Painel do administrador">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="8" r="4" />
               <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
             </svg>
-            <em>Conta</em>
+            <em>Admin</em>
           </button>
           <button className="g2-iconbtn g2-head__wish" onClick={onWish} aria-label="Lista de desejos">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2">
@@ -206,78 +200,92 @@ function MegaMenu({ categories, onNav, onClose }) {
 }
 
 /* ---------- Rodapé ---------- */
-export function Footer({ onNav, onToast, categories, settings, onAdmin }) {
-  const [email, setEmail] = useState("");
-  const cols = {
-    Categorias: categories.map((c) => c.name),
-    "Mais da G2": ["Sobre nós", "Trabalhe conosco", "Blog", "FAQ", "Programa de Afiliados"],
-    Parcerias: ["Cashback G2", "Seja um Revendedor", "Influenciadores", "Parceria para Eventos", "Cadastro de Afiliado"],
-    Políticas: ["Privacidade", "Trocas e Devoluções", "Entrega", "Cashback", "Promoções", "Termos de Uso"],
-  };
-  const routeFor = (label) => {
-    if (label === "Sobre nós") return { view: "about" };
-    if (label === "FAQ") return { view: "faq" };
-    const cat = categories.find((c) => c.name === label);
-    if (cat) return { view: "collection", cat: cat.slug };
-    return { view: "collection", cat: categories[0] ? categories[0].slug : "promocoes" };
-  };
+function InstagramIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.9">
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function Footer({ onNav, categories, settings, onAdmin }) {
   return (
     <footer className="g2-foot">
-      <div className="g2-foot__news">
-        <div className="g2-foot__news-in">
-          <div>
-            <h3 className="g2-h2">ENTRE PARA O CLUBE G2</h3>
-            <p>Novidades, conteúdos exclusivos e ofertas secretas direto no seu e-mail.</p>
-          </div>
-          <form
-            className="g2-foot__form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (email) {
-                onToast("✅ Bem-vindo ao Clube G2!");
-                setEmail("");
-              }
-            }}
-          >
-            <input type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            <Btn variant="gold">ENTRAR PARA O CLUBE</Btn>
-          </form>
+      <div className="g2-foot__cols g2-foot__cols--3">
+        <div className="g2-foot__col">
+          <h4>Categorias</h4>
+          <ul>
+            {categories.map((c) => (
+              <li key={c.slug}>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onNav({ view: "collection", cat: c.slug });
+                  }}
+                >
+                  {c.name}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
-      </div>
-      <div className="g2-foot__cols">
-        {Object.entries(cols).map(([h, items]) => (
-          <div key={h} className="g2-foot__col">
-            <h4>{h}</h4>
-            <ul>
-              {items.map((it) => (
-                <li key={it}>
-                  <a
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onNav(routeFor(it));
-                    }}
-                    href="#"
-                  >
-                    {it}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+
+        <div className="g2-foot__col">
+          <h4>Políticas</h4>
+          <ul>
+            {POLICY_LINKS.map((p) => (
+              <li key={p.slug}>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onNav({ view: "policy", slug: p.slug });
+                  }}
+                >
+                  {p.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div className="g2-foot__col g2-foot__contact">
           <h4>Contato</h4>
           <ul>
-            <li>WhatsApp: {settings.phoneDisplay}</li>
-            <li>{settings.email}</li>
+            <li>
+              <a href={"https://wa.me/" + settings.whatsapp} target="_blank" rel="noopener noreferrer">
+                WhatsApp: {settings.whatsappDisplay}
+              </a>
+            </li>
+            {settings.whatsapp2 && (
+              <li>
+                <a href={"https://wa.me/" + settings.whatsapp2} target="_blank" rel="noopener noreferrer">
+                  WhatsApp: {settings.whatsapp2Display}
+                </a>
+              </li>
+            )}
             <li>Atendimento: Seg–Sex 9h–18h</li>
+            {settings.address && (
+              <li style={{ marginTop: ".2rem" }}>
+                <a href={settings.mapUrl || "#"} target="_blank" rel="noopener noreferrer" style={{ lineHeight: 1.5, display: "block" }}>
+                  📍{" "}
+                  {settings.address.split("\n").map((line, i) => (
+                    <span key={i}>
+                      {i > 0 && <br />}
+                      {line}
+                    </span>
+                  ))}
+                </a>
+              </li>
+            )}
           </ul>
           <div className="g2-foot__social">
-            {["Instagram", "TikTok", "YouTube", "Facebook", "Pinterest"].map((s) => (
-              <a key={s} href="#" onClick={(e) => e.preventDefault()} title={s}>
-                {s[0]}
-              </a>
-            ))}
+            <a href={settings.instagram || "#"} target="_blank" rel="noopener noreferrer" title="Instagram" aria-label="Instagram">
+              <InstagramIcon />
+            </a>
           </div>
         </div>
       </div>
@@ -288,7 +296,7 @@ export function Footer({ onNav, onToast, categories, settings, onAdmin }) {
       </div>
       <div className="g2-foot__legal">
         <Logo light onClick={() => onNav({ view: "home" })} name={settings.storeName} />
-        <p>{settings.storeName} © 2026 — Todos os direitos reservados. CNPJ: XX.XXX.XXX/0001-XX · Estilo com Atitude.</p>
+        <p>{settings.storeName} © 2026 — Todos os direitos reservados. Anápolis-GO · Estilo com Atitude.</p>
         <a className="g2-foot__adminlink" href="/admin" onClick={(e) => { if (onAdmin) { e.preventDefault(); onAdmin(); } }}>
           Painel do administrador
         </a>
@@ -298,7 +306,7 @@ export function Footer({ onNav, onToast, categories, settings, onAdmin }) {
 }
 
 /* ---------- Barra inferior (mobile) ---------- */
-export function BottomBar({ view, cartCount, onNav, onSearch, onKit, onCart }) {
+export function BottomBar({ view, cartCount, onNav, onSearch, onKit, onCart, onAccount }) {
   const Item = ({ icon, label, active, onClick, badge, center }) => (
     <button className={"g2-bb__item" + (active ? " is-active" : "") + (center ? " g2-bb__item--center" : "")} onClick={onClick}>
       <span className="g2-bb__ico">
@@ -342,7 +350,8 @@ export function BottomBar({ view, cartCount, onNav, onSearch, onKit, onCart }) {
         }
       />
       <Item
-        label="Conta"
+        label="Admin"
+        onClick={onAccount}
         icon={
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="8" r="4" />

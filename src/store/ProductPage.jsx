@@ -10,14 +10,12 @@ export function ProductPage({ product, products, settings, onNav, onOpenProduct,
   const [activeImg, setActiveImg] = useState(0);
   const [color, setColor] = useState(0);
   const [qty, setQty] = useState(1);
-  const [buyType, setBuyType] = useState("once");
   const [tab, setTab] = useState("desc");
 
   useEffect(() => {
     setActiveImg(0);
     setColor(0);
     setQty(1);
-    setBuyType("once");
     setTab("desc");
     window.scrollTo(0, 0);
   }, [p && p.id]);
@@ -26,9 +24,7 @@ export function ProductPage({ product, products, settings, onNav, onOpenProduct,
   const info = stockInfo(p);
   const isOut = info.status === "out";
   const stock = Number(p.stock) || 0;
-  const discount = buyType === "month" ? 0.1 : buyType === "bi" ? 0.08 : 0;
-  const unit = +(p.price * (1 - discount)).toFixed(2);
-  const cashback = +((unit * qty * (settings.cashbackPct || 10)) / 100).toFixed(2);
+  const unit = p.price;
   const pixPrice = +(unit * (1 - (settings.pixDiscountPct || 5) / 100)).toFixed(2);
   const off = discountPct(p.price, p.oldPrice);
   const related = products.filter((x) => x.cat === p.cat && x.id !== p.id).slice(0, 6);
@@ -215,20 +211,6 @@ export function ProductPage({ product, products, settings, onNav, onOpenProduct,
             </span>
           </div>
 
-          <div className="g2-pdp__buytype">
-            {[
-              ["once", "Compra única", ""],
-              ["month", "Assinatura Mensal", "−10%"],
-              ["bi", "Assinatura Bimestral", "−8%"],
-            ].map(([v, l, tag]) => (
-              <label key={v} className={"g2-buytype" + (buyType === v ? " is-active" : "")}>
-                <input type="radio" name="bt" checked={buyType === v} onChange={() => setBuyType(v)} />
-                <span>{l}</span>
-                {tag && <em>{tag}</em>}
-              </label>
-            ))}
-          </div>
-
           <div className="g2-pdp__buyrow">
             <QtyStepper value={qty} onChange={setQty} max={stock || undefined} />
             <Btn variant="gold" full disabled={isOut} onClick={() => onAdd(p, qty, p.colors[color] && p.colors[color][0])}>
@@ -243,17 +225,6 @@ export function ProductPage({ product, products, settings, onNav, onOpenProduct,
           <button className="g2-pdp__wishbtn" onClick={() => onWish(p)}>
             {wishlist.has(p.id) ? "♥ Na sua lista de desejos" : "♡ Adicionar à lista de desejos"}
           </button>
-
-          <div className="g2-pdp__cashback">
-            💰 Você acumulará <strong>{brl(cashback)}</strong> de cashback nesta compra.
-          </div>
-
-          <ul className="g2-pdp__benefits">
-            <li>🚚 Frete grátis acima de R$ {settings.freeShip}</li>
-            <li>🔄 Troca fácil em 30 dias</li>
-            <li>🔒 Compra 100% segura</li>
-            <li>💰 {settings.cashbackPct}% de cashback na próxima compra</li>
-          </ul>
         </div>
       </div>
 

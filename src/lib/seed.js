@@ -162,26 +162,47 @@ export const SEED_BLOG = [
 
 export const SEED_SETTINGS = {
   storeName: "G2 IMPÉRIO",
-  whatsapp: "5511999990000", // 55 + DDD + número (troque pelo seu WhatsApp Business)
+  whatsapp: "5562992175676", // 55 + DDD + número — usado no checkout e botões
+  whatsappDisplay: "(62) 99217-5676",
+  whatsapp2: "5562992120122",
+  whatsapp2Display: "(62) 99212-0122",
+  instagram: "https://www.instagram.com/g2_imperio/",
+  address: "Rua Trás os Montes, N° 93 Quadra 60 Lote 12\nPolocentro 1 - 2° Etapa\nAnápolis - GO — 75130-710",
+  mapUrl:
+    "https://maps.apple.com/place?map=explore&place-id=I8A778A6CC32A7435&address=Rua+Tr%C3%A1s+os+Montes%2C+N%C2%B0+93+Quadra+60+Lote+12%2C+Polocentro+1+-+2%C2%B0+Etapa%2C+An%C3%A1polis+-+GO%2C+75130-710%2C+Brazil&coordinate=-16.374370%2C-48.968705&name=G2+Imp%C3%A9rio+An%C3%A1polis-GO",
   freeShip: 299,
   cashbackPct: 10,
   pixDiscountPct: 5,
   coupon: "G2IMPERIO10",
-  announcement:
-    "FRETE GRÁTIS acima de R$ 299  ·  10% de Cashback na próxima compra  ·  Cupom:",
-  email: "contato@g2imperio.com.br",
-  phoneDisplay: "(11) 9 9999-0000",
+  announcement: "FRETE GRÁTIS acima de R$ 299  ·  Frete rápido para todo o Brasil  ·  Cupom:",
   adminPassword: "g2admin", // senha do painel (apenas gate local — troque no painel)
 };
 
+// Capas do carrossel principal (editáveis no admin → Aparência)
+export const SEED_HERO = [
+  { id: "h1", theme: "dark", kicker: "ATÉ 30% OFF", title: "KITS COM DESCONTÃO & BRINDES INCLUSOS", sub: "", ctaLabel: "APROVEITE AGORA", ctaCat: "promocoes", image: "", hue: 42 },
+  { id: "h2", theme: "gold", kicker: "NOVIDADE", title: "NOVOS RELÓGIOS CHEGARAM", sub: "Estilo e precisão para o seu dia a dia.", ctaLabel: "VER COLEÇÃO", ctaCat: "relogios", image: "", hue: 45 },
+  { id: "h3", theme: "dark", kicker: "PREMIUM", title: "FONES & CAIXAS DE SOM", sub: "Sua trilha sonora com muito estilo.", ctaLabel: "COMPRAR AGORA", ctaCat: "som-fones", image: "", hue: 0 },
+  { id: "h4", theme: "light", kicker: "PARA TODOS OS ESTILOS", title: "MOCHILAS & BOLSAS G2", sub: "Praticidade e estilo para onde for.", ctaLabel: "EXPLORAR", ctaCat: "mochilas", image: "", hue: 210 },
+];
+
+// Banner promocional do meio da home (editável no admin)
+export const SEED_BANNER = { kicker: "PRATICIDADE E ESTILO", title: "BOLSAS & MALAS G2", sub: "Para onde for, com a sua atitude.", ctaLabel: "VER COLEÇÃO", cat: "bolsas-malas", theme: "light", image: "", hue: 25 };
+
+// Chamada do montador de kit (editável no admin)
+export const SEED_KITPROMO = { kicker: "MONTE SEU PACK", title: "MONTE SEU KIT PERFEITO", sub: "Já selecionamos os favoritos, mas você pode combinar como quiser — e ganhar até 15% OFF + brinde.", ctaLabel: "MONTAR KIT ⚡", image: "" };
+
 export function makeSeed() {
   return {
-    version: 1,
+    version: 2,
     categories: SEED_CATEGORIES.map((c) => ({ ...c })),
     products: buildProducts(),
     kits: SEED_KITS.map((k) => ({ ...k })),
     reviews: SEED_REVIEWS.map((r) => ({ ...r })),
     blog: SEED_BLOG.map((b) => ({ ...b })),
+    hero: SEED_HERO.map((h) => ({ ...h })),
+    banner: { ...SEED_BANNER },
+    kitPromo: { ...SEED_KITPROMO },
     settings: { ...SEED_SETTINGS },
   };
 }
