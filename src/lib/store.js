@@ -7,7 +7,7 @@ import { useSyncExternalStore, useMemo } from "react";
 import { makeSeed } from "./seed.js";
 import { slugify, installment as inst } from "./format.js";
 
-const KEY = "g2_imperio_data_v2";
+const KEY = "g2_imperio_data_v3";
 const CART_KEY = "g2_imperio_cart_v1";
 
 /* ---------------- estado + persistência ---------------- */

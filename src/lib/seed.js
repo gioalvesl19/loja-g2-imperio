@@ -141,6 +141,36 @@ function buildProducts() {
   });
 }
 
+// Produtos em destaque adicionados manualmente (com campos completos).
+const FEATURED = [
+  {
+    id: "p-kipling-teal",
+    name: "Mochila Feminina Kipling Escolar Casual Confortável Leve Moderna",
+    cat: "mochilas",
+    price: 159.0,
+    oldPrice: 399.0,
+    badge: "promo",
+    colors: [
+      ["Verde Esmeralda", "#0e9f8f"],
+      ["Turquesa", "#12b5a5"],
+    ],
+    specs: ["Quatro compartimentos", "Bolsos laterais", "Zíper tratorado reforçado", "Alças acolchoadas", "Tecido resistente e leve"],
+    desc:
+      "A mochila feminina casual é a escolha ideal para quem busca praticidade, estilo e conforto no dia a dia. Com design moderno e acabamento delicado, ela se destaca pelo visual elegante e por um charme decorativo que adiciona um toque fashion ao produto. Fabricada em material resistente e leve, oferece durabilidade sem comprometer o conforto. Possui compartimento principal espaçoso, ideal para livros, cadernos, acessórios e itens pessoais, além de bolso frontal com zíper para acesso rápido e bolsos laterais perfeitos para garrafas ou pequenos objetos. As alças são ajustáveis e acolchoadas, garantindo maior conforto durante o uso prolongado, e o formato ergonômico facilita o transporte na escola, trabalho, faculdade ou passeios.",
+    image: "",
+    rating: 4.9,
+    reviews: 128,
+    stock: 20,
+    active: true,
+    comments: [
+      { id: "ck1", name: "Amanda R.", stars: 5, text: "Mochila linda e muito espaçosa! Cabe tudo — cadernos, notebook e ainda sobra espaço. Chegou rápido e a cor é maravilhosa.", date: "24 jun 2026" },
+      { id: "ck2", name: "Beatriz L.", stars: 5, text: "Melhor compra que fiz! Super confortável nas costas, as alças são bem macias e o material parece de ótima qualidade. Recomendo demais.", date: "18 jun 2026" },
+      { id: "ck3", name: "Carla M.", stars: 5, text: "Produto excelente, exatamente como nas fotos. Resistente, leve e com vários compartimentos. Valeu muito a pena pelo preço em promoção!", date: "10 jun 2026" },
+    ],
+    slug: slugify("Mochila Feminina Kipling Escolar Casual Confortável Leve Moderna"),
+  },
+];
+
 export const SEED_KITS = [
   { id: "k1", name: "Kit G2 Starter", items: "Óculos + Boné + Garrafa", price: 219.9, oldPrice: 249.7 },
   { id: "k2", name: "Kit G2 Premium", items: "Relógio + Bolsa + Fone TWS", price: 449.9, oldPrice: 499.7 },
@@ -194,9 +224,9 @@ export const SEED_KITPROMO = { kicker: "MONTE SEU PACK", title: "MONTE SEU KIT P
 
 export function makeSeed() {
   return {
-    version: 2,
+    version: 3,
     categories: SEED_CATEGORIES.map((c) => ({ ...c })),
-    products: buildProducts(),
+    products: [...FEATURED.map((p) => ({ ...p, comments: p.comments.map((c) => ({ ...c })) })), ...buildProducts()],
     kits: SEED_KITS.map((k) => ({ ...k })),
     reviews: SEED_REVIEWS.map((r) => ({ ...r })),
     blog: SEED_BLOG.map((b) => ({ ...b })),
