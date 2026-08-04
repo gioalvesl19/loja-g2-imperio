@@ -634,6 +634,90 @@ html[data-card-style="shadow"] .g2-card{box-shadow:var(--g2-shadow-sm);}
 }
 
 /* ============================================================
+   REFINAMENTOS MOBILE (loja)
+   ============================================================ */
+/* em telas de toque: botão "adicionar" sempre visível e sem hover preso */
+@media(hover:none){
+  .g2-card__addbar{opacity:1;transform:none;}
+  .g2-card:hover{transform:none;box-shadow:var(--g2-shadow-sm);}
+  .g2-card:active{transform:scale(.99);}
+}
+
+/* vitrine em 2 colunas + carrosséis com cards menores */
+@media(max-width:640px){
+  .g2-grid{grid-template-columns:1fr 1fr;gap:.7rem;}
+  .g2-rail__cell{flex-basis:clamp(150px,44vw,185px);}
+  .g2-rail__cell--review{flex-basis:min(82vw,310px);}
+  .g2-rail__cell--blog{flex-basis:clamp(210px,62vw,250px);}
+  .g2-rail__track{gap:.7rem;}
+  .g2-cats__item{flex-basis:clamp(96px,26vw,120px);}
+}
+
+@media(max-width:560px){
+  /* seções e títulos mais enxutos */
+  .g2-section{padding:1.9rem 1rem;}
+  .g2-section__head{margin-bottom:1rem;}
+  .g2-h2{font-size:clamp(1.7rem,7vw,2.1rem);}
+  .g2-section__sub{font-size:.9rem;}
+
+  /* cards compactos para o grid 2 colunas */
+  .g2-card__body{padding:.6rem .55rem .75rem;gap:.15rem;}
+  .g2-card__name{font-size:.82rem;min-height:2.1em;}
+  .g2-card__price strong{font-size:1rem;}
+  .g2-card__price s{font-size:.72rem;}
+  .g2-card__inst{font-size:.66rem;}
+  .g2-card__rating em{font-size:.64rem;}
+  .g2-card__stock{font-size:.64rem;}
+  .g2-card__addbar{left:8px;right:8px;bottom:8px;}
+  .g2-card__addbar button{font-size:.72rem;padding:.6em;}
+
+  /* hero controlado no celular */
+  .g2-hero{margin-top:.5rem;border-radius:10px;}
+  .g2-hero__slide{min-height:300px;}
+  .g2-hero__txt{padding:1.4rem 1.2rem;gap:.7rem;}
+  .g2-hero__title{font-size:clamp(1.85rem,8.5vw,2.4rem);}
+  .g2-hero__kicker{font-size:.7rem;letter-spacing:.14em;}
+  .g2-hero__sub{font-size:.95rem;}
+  .g2-hero__nav{width:34px;height:34px;font-size:1.15rem;}
+  .g2-hero__txt .g2-btn{margin-top:.2rem;}
+
+  /* cabeçalho enxuto */
+  .g2-head__bar{gap:.35rem;padding:.55rem .8rem;}
+  .g2-iconbtn{padding:.36rem;}
+  .g2-ann__item{padding:.55em 1.4em;font-size:.72rem;}
+
+  /* banner e chamada de kit menores */
+  .g2-banner,.g2-kitpromo{min-height:230px;margin:.7rem auto;}
+  .g2-banner__title,.g2-kitpromo .g2-banner__title{font-size:clamp(1.7rem,7.5vw,2.3rem);}
+  .g2-banner__in,.g2-kitpromo__in{padding:1.6rem 1.3rem;gap:.7rem;}
+  .g2-banner__in p,.g2-kitpromo__in p{font-size:.92rem;}
+
+  /* rodapé: Categorias | Políticas e Contato ocupando a largura */
+  .g2-foot__contact{grid-column:1 / -1;}
+  .g2-foot__cols{gap:1.3rem 1.2rem;}
+  .g2-foot__legal{flex-direction:column;align-items:flex-start;gap:.7rem;}
+  .g2-foot__adminlink{margin-left:0;}
+
+  /* PDP */
+  .g2-pdp{padding:.4rem 1rem 2.4rem;}
+  .g2-pdp__name{font-size:clamp(1.7rem,7.5vw,2.2rem);}
+  .g2-pdp__price strong{font-size:1.9rem;}
+  .g2-pdp__buyrow{gap:.5rem;}
+  .g2-reviews__score strong{font-size:3rem;}
+
+  /* toasts sem estourar a largura */
+  .g2-toasts{left:12px;right:12px;top:10px;}
+  .g2-toast{max-width:none;}
+}
+
+@media(max-width:380px){
+  .g2-grid{gap:.5rem;}
+  .g2-card__name{font-size:.78rem;}
+  .g2-logo__word{font-size:1.2rem;}
+  .g2-head__right{gap:.1rem;}
+}
+
+/* ============================================================
    PAINEL ADMINISTRATIVO
    ============================================================ */
 .adm{min-height:100vh;background:var(--g2-surface);color:var(--g2-text);display:flex;flex-direction:column;}
