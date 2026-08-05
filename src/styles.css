@@ -25,6 +25,14 @@ s{color:var(--g2-muted);}
 img{max-width:100%;display:block;}
 ::selection{background:var(--g2-gold);color:#0A0A0A;}
 
+/* Tela de carregamento inicial */
+.g2-boot{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4rem;background:var(--g2-primary);}
+.g2-boot__logo{display:flex;align-items:center;gap:.6rem;color:var(--g2-gold);}
+.g2-boot__logo span{font-family:var(--g2-head-font);font-size:2rem;letter-spacing:.06em;color:#fff;}
+.g2-boot__bar{width:180px;height:4px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;}
+.g2-boot__bar span{display:block;width:40%;height:100%;background:var(--g2-gold);border-radius:99px;animation:g2boot 1.1s ease-in-out infinite;}
+@keyframes g2boot{0%{margin-left:-40%;}100%{margin-left:100%;}}
+
 .g2-app{overflow-x:clip;}
 .g2-section{max-width:var(--g2-maxw);margin:0 auto;padding:clamp(2.4rem,5vw,4rem) clamp(1rem,3vw,2rem);}
 .g2-h2{font-family:var(--g2-head-font);font-weight:400;letter-spacing:.018em;line-height:.96;
@@ -114,6 +122,7 @@ html[data-card-style="shadow"] .g2-card{box-shadow:var(--g2-shadow-sm);}
 .g2-card__price s{font-size:.8rem;}
 .g2-card__price strong{font-size:1.12rem;font-weight:800;letter-spacing:-.01em;}
 .g2-card__inst{font-size:.72rem;color:var(--g2-muted);}
+.g2-card__consult{font-size:.98rem;font-weight:800;color:var(--g2-gold);letter-spacing:.01em;}
 .g2-card__stock{font-size:.7rem;font-weight:700;color:#b32a2a;letter-spacing:.02em;margin-top:.1rem;}
 .g2-card__stock--out{color:#9a958c;}
 

@@ -1,6 +1,7 @@
-/* G2 IMPÉRIO — painel administrativo (localStorage, sem backend) */
+/* G2 IMPÉRIO — painel administrativo (Supabase Auth) */
 import { useState } from "react";
 import { useStore } from "../lib/store.js";
+import { hasSupabase } from "../lib/supabase.js";
 import { Dashboard } from "./Dashboard.jsx";
 import { ProductsTab } from "./ProductsTab.jsx";
 import { CategoriesTab } from "./CategoriesTab.jsx";
@@ -27,17 +28,26 @@ function Icon({ d }) {
   );
 }
 
-function Login({ onOk, expected, storeName }) {
+function Login({ store, onLocalOk }) {
+  const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
-  const [err, setErr] = useState(false);
-  const submit = (e) => {
+  const [err, setErr] = useState("");
+  const [busy, setBusy] = useState(false);
+  const submit = async (e) => {
     e.preventDefault();
-    if (pwd === expected) {
-      sessionStorage.setItem(AUTH_KEY, "1");
-      onOk();
+    setErr("");
+    setBusy(true);
+    if (hasSupabase) {
+      const { error } = await store.db.signIn(email, pwd);
+      if (error) setErr("E-mail ou senha incorretos.");
+      // sucesso → onAuthStateChange atualiza a sessão e renderiza o painel
     } else {
-      setErr(true);
+      if (pwd === (store.settings.adminPassword || "g2admin")) {
+        sessionStorage.setItem(AUTH_KEY, "1");
+        onLocalOk();
+      } else setErr("Senha incorreta.");
     }
+    setBusy(false);
   };
   return (
     <div className="adm-login">
@@ -46,28 +56,22 @@ function Login({ onOk, expected, storeName }) {
           <svg viewBox="0 0 32 24" width="30" height="22" aria-hidden="true">
             <path d="M2 22h28l-2.5-15-7 7-4.5-11-4.5 11-7-7L2 22z" fill="currentColor" />
           </svg>
-          <span>{storeName}</span>
+          <span>{store.settings.storeName}</span>
         </div>
         <h1>Painel do Administrador</h1>
-        <p>Digite a senha para acessar a gestão da loja.</p>
+        <p>{hasSupabase ? "Entre com seu e-mail e senha de administrador." : "Digite a senha para acessar a gestão da loja."}</p>
+        {hasSupabase && (
+          <div className="adm-field">
+            <input className="adm-input" type="email" autoFocus placeholder="E-mail" value={email} onChange={(e) => { setEmail(e.target.value); setErr(""); }} />
+          </div>
+        )}
         <div className="adm-field">
-          <input
-            className="adm-input"
-            type="password"
-            autoFocus
-            placeholder="Senha"
-            value={pwd}
-            onChange={(e) => {
-              setPwd(e.target.value);
-              setErr(false);
-            }}
-          />
+          <input className="adm-input" type="password" autoFocus={!hasSupabase} placeholder="Senha" value={pwd} onChange={(e) => { setPwd(e.target.value); setErr(""); }} />
         </div>
-        {err && <div className="adm-login__err">Senha incorreta. Tente novamente.</div>}
-        <button className="g2-btn g2-btn--gold g2-btn--full g2-btn--lg" type="submit">
-          Entrar
+        {err && <div className="adm-login__err">{err}</div>}
+        <button className="g2-btn g2-btn--gold g2-btn--full g2-btn--lg" type="submit" disabled={busy}>
+          {busy ? "Entrando…" : "Entrar"}
         </button>
-        <p style={{ fontSize: ".78rem" }}>Senha padrão: <b>g2admin</b> (altere em Configurações).</p>
       </form>
     </div>
   );
@@ -75,12 +79,27 @@ function Login({ onOk, expected, storeName }) {
 
 export function AdminApp({ onExit }) {
   const store = useStore();
-  const [authed, setAuthed] = useState(() => sessionStorage.getItem(AUTH_KEY) === "1");
+  const [localAuthed, setLocalAuthed] = useState(() => sessionStorage.getItem(AUTH_KEY) === "1");
   const [tab, setTab] = useState("dash");
   const [sideOpen, setSideOpen] = useState(false);
 
+  const authed = hasSupabase ? store.isAuthed : localAuthed;
+
   if (!authed) {
-    return <Login onOk={() => setAuthed(true)} expected={store.settings.adminPassword || "g2admin"} storeName={store.settings.storeName} />;
+    return <Login store={store} onLocalOk={() => setLocalAuthed(true)} />;
+  }
+  if (hasSupabase && !store.ready) {
+    return (
+      <div className="adm-login">
+        <div className="adm-login__card" style={{ alignItems: "center" }}>
+          <div className="adm-login__logo">
+            <svg viewBox="0 0 32 24" width="30" height="22" aria-hidden="true"><path d="M2 22h28l-2.5-15-7 7-4.5-11-4.5 11-7-7L2 22z" fill="currentColor" /></svg>
+            <span>{store.settings.storeName}</span>
+          </div>
+          <p>Carregando o catálogo…</p>
+        </div>
+      </div>
+    );
   }
 
   const NAV = [
@@ -92,9 +111,10 @@ export function AdminApp({ onExit }) {
     ["set", "Configurações", ICONS.set],
   ];
 
-  const logout = () => {
+  const logout = async () => {
+    if (hasSupabase) await store.db.signOut();
     sessionStorage.removeItem(AUTH_KEY);
-    setAuthed(false);
+    setLocalAuthed(false);
   };
 
   const go = (t) => {

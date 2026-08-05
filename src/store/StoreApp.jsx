@@ -1,7 +1,7 @@
 /* G2 IMPÉRIO — aplicação da loja: rotas internas, carrinho, wishlist, overlays */
 import { useState, useEffect, useCallback, useRef } from "react";
 import { brl, openWhats } from "../lib/format.js";
-import { useStore, loadCart, saveCart } from "../lib/store.js";
+import { useStore, loadCart, saveCart, hasPrice } from "../lib/store.js";
 import { AnnouncementBar, Header, Footer, BottomBar } from "../components/layout.jsx";
 import { Home } from "./Home.jsx";
 import { Collection } from "./Collection.jsx";
@@ -10,8 +10,8 @@ import { Faq } from "./Faq.jsx";
 import { PolicyPage } from "./PolicyPage.jsx";
 import { CartDrawer, SearchModal, KitBuilder, MobileMenu, Toasts } from "./Overlays.jsx";
 
-export function StoreApp({ onAdmin }) {
-  const { products, categories, reviews, blog, settings, hero, banner, kitPromo, db } = useStore();
+export function StoreApp({ onAdmin, productSlug, navigate }) {
+  const { products, categories, reviews, blog, settings, hero, banner, kitPromo } = useStore();
 
   const [route, setRoute] = useState({ view: "home" });
   const [cart, setCart] = useState(() => loadCart());
@@ -31,22 +31,63 @@ export function StoreApp({ onAdmin }) {
     setTimeout(() => setToasts((ts) => ts.filter((x) => x.id !== id)), 2600);
   }, []);
 
-  const nav = useCallback((r) => {
-    setRoute(r);
-    setMenuOpen(false);
-    window.scrollTo(0, 0);
-  }, []);
+  const nav = useCallback(
+    (r) => {
+      setRoute(r);
+      setMenuOpen(false);
+      window.scrollTo(0, 0);
+      // ao sair de uma página de produto, volta a URL para "/"
+      if (navigate && /\/produto\//i.test(window.location.pathname)) navigate("/");
+    },
+    [navigate]
+  );
 
   const productsRef = useRef(products);
   productsRef.current = products;
-  const openProduct = useCallback((p) => {
-    const full = productsRef.current.find((x) => x.id === p.id) || p;
-    setRoute({ view: "product", product: full });
-    window.scrollTo(0, 0);
-  }, []);
+  const openProduct = useCallback(
+    (p) => {
+      const full = productsRef.current.find((x) => x.id === p.id) || p;
+      // navega pela URL própria do produto (link compartilhável)
+      if (navigate && full.slug) navigate("/produto/" + full.slug);
+      else {
+        setRoute({ view: "product", product: full });
+        window.scrollTo(0, 0);
+      }
+    },
+    [navigate]
+  );
+
+  // sincroniza a rota interna com a URL (deep-link / voltar do navegador)
+  useEffect(() => {
+    if (!products.length) return;
+    if (productSlug) {
+      const p = products.find((x) => x.slug === productSlug);
+      if (p) {
+        setRoute({ view: "product", product: p });
+        window.scrollTo(0, 0);
+      }
+    } else {
+      setRoute((r) => (r.view === "product" ? { view: "home" } : r));
+    }
+  }, [productSlug, products]);
+
+  // consulta de preço via WhatsApp (produtos sem preço definido)
+  const consult = useCallback(
+    (p) => {
+      const link = window.location.origin + "/produto/" + p.slug;
+      const lines = ["Olá, G2 Império! 👑 Tenho interesse neste produto:", "", "• " + p.name, link, "", "Qual o valor e a disponibilidade?"];
+      openWhats(settings.whatsapp, lines.join("\n"));
+      toast("💬 Abrindo o WhatsApp…");
+    },
+    [settings.whatsapp, toast]
+  );
 
   const addToCart = useCallback(
     (p, qty = 1, variant) => {
+      if (!hasPrice(p)) {
+        consult(p);
+        return;
+      }
       const key = p.id + (variant || "");
       const stock = Number(p.stock) || 0;
       if (stock <= 0) {
@@ -72,6 +113,10 @@ export function StoreApp({ onAdmin }) {
 
   const buyNow = useCallback(
     (p, qty, variant) => {
+      if (!hasPrice(p)) {
+        consult(p);
+        return;
+      }
       const lines = ["Olá, G2 Império! 👑 Quero comprar este produto:", "", "• " + p.name + (variant ? " (" + variant + ")" : ""), "Quantidade: " + qty, "Valor: " + brl(p.price * qty), "", "Pode me ajudar a finalizar?"];
       openWhats(settings.whatsapp, lines.join("\n"));
       toast("💬 Abrindo o WhatsApp…");

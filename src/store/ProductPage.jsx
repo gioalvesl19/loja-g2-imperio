@@ -1,7 +1,7 @@
 /* G2 IMPÉRIO — página de produto (PDP) */
 import { useState, useEffect } from "react";
 import { brl, discountPct } from "../lib/format.js";
-import { stockInfo } from "../lib/store.js";
+import { stockInfo, hasPrice } from "../lib/store.js";
 import { Badge, Btn, Placeholder, ProductCard, Stars, WhatsIcon } from "../components/primitives.jsx";
 import { Rail } from "../components/Rail.jsx";
 
@@ -22,7 +22,8 @@ export function ProductPage({ product, products, settings, onNav, onOpenProduct,
   if (!p) return null;
 
   const info = stockInfo(p);
-  const isOut = info.status === "out";
+  const priced = hasPrice(p);
+  const isOut = priced && info.status === "out";
   const stock = Number(p.stock) || 0;
   const unit = p.price;
   const parcelas = Number(p.installments) || 3;
@@ -200,40 +201,58 @@ export function ProductPage({ product, products, settings, onNav, onOpenProduct,
             </div>
           )}
 
-          <div className={"g2-pdp__stock g2-pdp__stock--" + info.status}>
-            {info.status === "ok" && "✔ Em estoque — pronta entrega"}
-            {info.status === "low" && "🔥 " + info.label}
-            {info.status === "out" && "✖ Produto esgotado no momento"}
-          </div>
+          {priced ? (
+            <>
+              <div className={"g2-pdp__stock g2-pdp__stock--" + info.status}>
+                {info.status === "ok" && "✔ Em estoque — pronta entrega"}
+                {info.status === "low" && "🔥 " + info.label}
+                {info.status === "out" && "✖ Produto esgotado no momento"}
+              </div>
 
-          <div className="g2-pdp__price">
-            <div className="g2-pdp__pricerow">
-              {p.oldPrice && <s>{brl(p.oldPrice)}</s>}
-              <strong>{brl(unit)}</strong>
-              {off > 0 && <span className="g2-pdp__off">-{off}%</span>}
-            </div>
-            <span className="g2-pdp__inst">
-              ou {parcelas}x de {brl(unit / parcelas)}
-              {semJuros ? " sem juros" : ""}
-            </span>
-            {pixPct > 0 && (
-              <span className="g2-pdp__pix">
-                {brl(pixPrice)} no Pix ({pixPct}% off)
-              </span>
-            )}
-          </div>
+              <div className="g2-pdp__price">
+                <div className="g2-pdp__pricerow">
+                  {p.oldPrice && <s>{brl(p.oldPrice)}</s>}
+                  <strong>{brl(unit)}</strong>
+                  {off > 0 && <span className="g2-pdp__off">-{off}%</span>}
+                </div>
+                <span className="g2-pdp__inst">
+                  ou {parcelas}x de {brl(unit / parcelas)}
+                  {semJuros ? " sem juros" : ""}
+                </span>
+                {pixPct > 0 && (
+                  <span className="g2-pdp__pix">
+                    {brl(pixPrice)} no Pix ({pixPct}% off)
+                  </span>
+                )}
+              </div>
 
-          <div className="g2-pdp__buyrow">
-            <QtyStepper value={qty} onChange={setQty} max={stock || undefined} />
-            <Btn variant="gold" full disabled={isOut} onClick={() => onAdd(p, qty, p.colors[color] && p.colors[color][0])}>
-              {isOut ? "PRODUTO ESGOTADO" : "ADICIONAR AO CARRINHO"}
-            </Btn>
-          </div>
-          <Btn variant="dark" full onClick={() => onBuyNow(p, qty, p.colors[color] && p.colors[color][0])}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: ".5em" }}>
-              <WhatsIcon /> COMPRAR NO WHATSAPP
-            </span>
-          </Btn>
+              <div className="g2-pdp__buyrow">
+                <QtyStepper value={qty} onChange={setQty} max={stock || undefined} />
+                <Btn variant="gold" full disabled={isOut} onClick={() => onAdd(p, qty, p.colors[color] && p.colors[color][0])}>
+                  {isOut ? "PRODUTO ESGOTADO" : "ADICIONAR AO CARRINHO"}
+                </Btn>
+              </div>
+              <Btn variant="dark" full onClick={() => onBuyNow(p, qty, p.colors[color] && p.colors[color][0])}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: ".5em" }}>
+                  <WhatsIcon /> COMPRAR NO WHATSAPP
+                </span>
+              </Btn>
+            </>
+          ) : (
+            <>
+              <div className="g2-pdp__price">
+                <div className="g2-pdp__pricerow">
+                  <strong style={{ color: "var(--g2-gold)" }}>Preço sob consulta</strong>
+                </div>
+                <span className="g2-pdp__inst">Consulte valor, cores e condições pelo WhatsApp.</span>
+              </div>
+              <Btn variant="gold" size="lg" full onClick={() => onBuyNow(p, qty, p.colors[color] && p.colors[color][0])}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: ".5em" }}>
+                  <WhatsIcon /> CONSULTAR NO WHATSAPP
+                </span>
+              </Btn>
+            </>
+          )}
           <button className="g2-pdp__wishbtn" onClick={() => onWish(p)}>
             {wishlist.has(p.id) ? "♥ Na sua lista de desejos" : "♡ Adicionar à lista de desejos"}
           </button>

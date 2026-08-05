@@ -1,7 +1,7 @@
 /* G2 IMPÉRIO — primitivos de UI */
 import { useState } from "react";
 import { brl } from "../lib/format.js";
-import { displayBadge, stockInfo } from "../lib/store.js";
+import { displayBadge, stockInfo, hasPrice } from "../lib/store.js";
 
 /* ---------- Placeholder listrado (quando não há foto) ---------- */
 export function Placeholder({ label, hue = 40, ratio = "1 / 1", round = 0, sat = 18, light = 92, mono = true, style = {} }) {
@@ -123,7 +123,8 @@ export function ProductCard({ p, onOpen, onAdd, onWish, wished }) {
   const [hover, setHover] = useState(false);
   const badge = displayBadge(p);
   const info = stockInfo(p);
-  const isOut = info.status === "out";
+  const priced = hasPrice(p);
+  const isOut = priced && info.status === "out";
   return (
     <article
       className={"g2-card" + (isOut ? " g2-card--out" : "")}
@@ -146,10 +147,11 @@ export function ProductCard({ p, onOpen, onAdd, onWish, wished }) {
             disabled={isOut}
             onClick={(e) => {
               e.stopPropagation();
-              if (!isOut) onAdd && onAdd(p);
+              if (!priced) onAdd && onAdd(p);
+              else if (!isOut) onAdd && onAdd(p);
             }}
           >
-            {isOut ? "ESGOTADO" : "+ ADICIONAR"}
+            {!priced ? "CONSULTAR PREÇO" : isOut ? "ESGOTADO" : "+ ADICIONAR"}
           </button>
         </div>
       </div>
@@ -161,16 +163,24 @@ export function ProductCard({ p, onOpen, onAdd, onWish, wished }) {
           </em>
         </div>
         <h3 className="g2-card__name">{p.name}</h3>
-        <div className="g2-card__price">
-          {p.oldPrice && <s>{brl(p.oldPrice)}</s>}
-          <strong>{brl(p.price)}</strong>
-        </div>
-        <span className="g2-card__inst">
-          {(p.installments || 3)}x de {brl(p.installment)}
-          {p.installmentsFree !== false ? " sem juros" : ""}
-        </span>
-        {info.status === "low" && <span className="g2-card__stock">🔥 {info.label}</span>}
-        {info.status === "out" && <span className="g2-card__stock g2-card__stock--out">Sem estoque no momento</span>}
+        {priced ? (
+          <>
+            <div className="g2-card__price">
+              {p.oldPrice && <s>{brl(p.oldPrice)}</s>}
+              <strong>{brl(p.price)}</strong>
+            </div>
+            <span className="g2-card__inst">
+              {(p.installments || 3)}x de {brl(p.installment)}
+              {p.installmentsFree !== false ? " sem juros" : ""}
+            </span>
+            {info.status === "low" && <span className="g2-card__stock">🔥 {info.label}</span>}
+            {info.status === "out" && <span className="g2-card__stock g2-card__stock--out">Sem estoque no momento</span>}
+          </>
+        ) : (
+          <div className="g2-card__price">
+            <strong className="g2-card__consult">Sob consulta</strong>
+          </div>
+        )}
       </div>
     </article>
   );

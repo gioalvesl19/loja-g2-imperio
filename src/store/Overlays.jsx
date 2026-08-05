@@ -1,6 +1,7 @@
 /* G2 IMPÉRIO — overlays: carrinho, busca, montador de kit, toasts, menu mobile */
 import { useState, useEffect, useRef } from "react";
 import { brl, norm } from "../lib/format.js";
+import { hasPrice } from "../lib/store.js";
 import { Btn, Placeholder, Qty, WhatsIcon } from "../components/primitives.jsx";
 import { Logo } from "../components/layout.jsx";
 
@@ -23,7 +24,7 @@ export function CartDrawer({ open, items, products, settings, onClose, onQty, on
   const subtotal = items.reduce((s, it) => s + it.price * it.qty, 0);
   const remaining = Math.max(0, FREE_SHIP - subtotal);
   const pct = Math.min(100, (subtotal / FREE_SHIP) * 100);
-  const suggestions = products.filter((p) => !items.some((it) => it.id === p.id) && (Number(p.stock) || 0) > 0).slice(0, 3);
+  const suggestions = products.filter((p) => !items.some((it) => it.id === p.id) && (Number(p.stock) || 0) > 0 && hasPrice(p)).slice(0, 3);
 
   return (
     <div className={"g2-overlay" + (open ? " is-open" : "")} onClick={onClose}>
@@ -188,7 +189,7 @@ export function SearchModal({ open, products, onClose, onOpenProduct }) {
                     )}
                     <div>
                       <strong>{p.name}</strong>
-                      <em>{brl(p.price)}</em>
+                      <em>{hasPrice(p) ? brl(p.price) : "Sob consulta"}</em>
                     </div>
                   </button>
                 ))
@@ -253,7 +254,7 @@ export function KitBuilder({ open, products, categories, onClose, onAddKit, onTo
   }, [open]);
   if (!open) return null;
 
-  const list = products.filter((p) => p.cat === tab && (Number(p.stock) || 0) > 0);
+  const list = products.filter((p) => p.cat === tab && (Number(p.stock) || 0) > 0 && hasPrice(p));
   const entries = Object.values(sel);
   const count = entries.reduce((s, e) => s + e.qty, 0);
   const gross = entries.reduce((s, e) => s + e.p.price * e.qty, 0);

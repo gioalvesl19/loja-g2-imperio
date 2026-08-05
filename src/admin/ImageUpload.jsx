@@ -4,9 +4,40 @@
    destino do arquivo — a interface (onChange recebendo a "fonte" da imagem)
    permanece a mesma. */
 import { useRef, useState } from "react";
+import { supabase, hasSupabase, STORAGE_BUCKET } from "../lib/supabase.js";
 
-const MAX_DIM = 900; // maior lado da imagem (px)
-const QUALITY = 0.82; // qualidade JPEG
+const MAX_DIM = 1000; // maior lado da imagem (px)
+const QUALITY = 0.82; // qualidade da compressão
+
+async function finish(canvas, onChange, setBusy) {
+  // Supabase: envia webp ao Storage e devolve a URL pública
+  if (hasSupabase && supabase) {
+    try {
+      const blob = await new Promise((res) => canvas.toBlob(res, "image/webp", QUALITY));
+      if (blob) {
+        const path = `uploads/${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}.webp`;
+        const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(path, blob, { contentType: "image/webp", upsert: false });
+        if (!error) {
+          const { data } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+          onChange(data.publicUrl);
+          setBusy(false);
+          return;
+        }
+        console.error("upload:", error.message);
+        window.alert("Falha no upload: " + error.message + "\nVocê está logado como administrador?");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  // fallback: base64 (modo local)
+  try {
+    onChange(canvas.toDataURL("image/jpeg", QUALITY));
+  } catch {
+    onChange("");
+  }
+  setBusy(false);
+}
 
 export function ImageUpload({ value, onChange, aspect = "1 / 1" }) {
   const inputRef = useRef(null);
@@ -37,14 +68,7 @@ export function ImageUpload({ value, onChange, aspect = "1 / 1" }) {
         canvas.height = h;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, w, h);
-        let out;
-        try {
-          out = canvas.toDataURL("image/jpeg", QUALITY);
-        } catch {
-          out = reader.result;
-        }
-        onChange(out);
-        setBusy(false);
+        finish(canvas, onChange, setBusy);
       };
       img.onerror = () => {
         setBusy(false);
