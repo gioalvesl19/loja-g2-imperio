@@ -243,35 +243,7 @@ function Highlights({ settings }) {
   );
 }
 
-function BlogSection({ blog }) {
-  return (
-    <section className="g2-section">
-      <div className="g2-section__head">
-        <div>
-          <h2 className="g2-h2">DICAS & TENDÊNCIAS</h2>
-          <p className="g2-section__sub">Conteúdos para você curtir.</p>
-        </div>
-        <button className="g2-link">Ver tudo →</button>
-      </div>
-      <Rail>
-        {blog.map((b, i) => (
-          <div className="g2-rail__cell g2-rail__cell--blog" key={i}>
-            <article className="g2-blog">
-              <Placeholder label="thumbnail" hue={b.hue} ratio="16 / 10" round={12} light={92} />
-              <span className="g2-blog__tag" style={{ color: `hsl(${b.hue} 45% 38%)` }}>
-                {b.tag}
-              </span>
-              <h3>{b.title}</h3>
-              <time>{b.date}</time>
-            </article>
-          </div>
-        ))}
-      </Rail>
-    </section>
-  );
-}
-
-export function Home({ products, categories, reviews, blog, settings, hero, banner, onNav, onOpenProduct, onOrder }) {
+export function Home({ products, categories, reviews, settings, hero, banner, onNav, onOpenProduct, onOrder }) {
   const share = { products, onNav, onOpenProduct, onOrder };
   const showcaseCats = categories.slice(0, 4);
   return (
@@ -286,7 +258,6 @@ export function Home({ products, categories, reviews, blog, settings, hero, bann
       {showcaseCats[3] && <Showcase title={showcaseCats[3].name.toUpperCase()} sub="Novidades que você vai amar." cat={showcaseCats[3].slug} {...share} />}
       <ReviewsSection reviews={reviews} />
       <Highlights settings={settings} />
-      <BlogSection blog={blog} />
     </main>
   );
 }
