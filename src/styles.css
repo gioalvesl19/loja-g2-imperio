@@ -314,6 +314,8 @@ html[data-card-style="shadow"] .g2-card{box-shadow:var(--g2-shadow-sm);}
 /* ---------- Bottom bar (mobile) ---------- */
 .g2-bb{display:none;position:fixed;bottom:0;left:0;right:0;z-index:80;background:var(--g2-bg);border-top:1px solid var(--g2-border);
   padding:.4rem .3rem calc(.4rem + env(safe-area-inset-bottom));grid-template-columns:repeat(5,1fr);box-shadow:0 -4px 18px rgba(0,0,0,.06);}
+.g2-bb--4{grid-template-columns:repeat(4,1fr);}
+.g2-bb--4 .g2-bb__item--center .g2-bb__ico{background:#25D366;color:#fff;}
 .g2-bb__item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:.3rem;color:var(--g2-muted);}
 .g2-bb__item.is-active{color:var(--g2-primary);}
 .g2-bb__ico{position:relative;}

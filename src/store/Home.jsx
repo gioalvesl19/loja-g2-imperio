@@ -3,12 +3,20 @@ import { useState, useEffect } from "react";
 import { Btn, Placeholder, ProductCard, Stars } from "../components/primitives.jsx";
 import { Rail } from "../components/Rail.jsx";
 
+/* imagem de um produto da categoria (ou qualquer um com foto) */
+function catImage(products, catSlug) {
+  const inCat = products.find((p) => p.cat === catSlug && p.image);
+  if (inCat) return inCat.image;
+  const any = products.find((p) => p.image);
+  return any ? any.image : "";
+}
+
 /* ---------- Carrossel do topo (capas editáveis no admin) ---------- */
 function heroVariant(theme) {
   return theme === "gold" || theme === "light" ? "dark" : "accent";
 }
 
-function Hero({ slides, onNav }) {
+function Hero({ slides, products, onNav }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
   const n = slides.length;
@@ -35,13 +43,16 @@ function Hero({ slides, onNav }) {
               </Btn>
             </div>
             <div className="g2-hero__media">
-              {s.image ? (
-                <div className="g2-img" style={{ height: "100%" }}>
-                  <img src={s.image} alt={s.title} />
-                </div>
-              ) : (
-                <Placeholder label="capa" hue={s.hue} ratio="auto" light={s.theme === "light" ? 90 : 30} sat={s.theme === "gold" ? 30 : 14} style={{ height: "100%" }} />
-              )}
+              {(() => {
+                const img = s.image || catImage(products, s.ctaCat);
+                return img ? (
+                  <div className="g2-img g2-hero__img" style={{ height: "100%" }}>
+                    <img src={img} alt={s.title} />
+                  </div>
+                ) : (
+                  <Placeholder label="capa" hue={s.hue} ratio="auto" light={s.theme === "light" ? 90 : 30} sat={s.theme === "gold" ? 30 : 14} style={{ height: "100%" }} />
+                );
+              })()}
             </div>
           </div>
         ))}
@@ -82,8 +93,8 @@ function CategoryStrip({ categories, onNav }) {
 
 function BenefitsMarquee({ settings }) {
   const items = [
-    `🚚 Frete grátis acima de R$ ${settings.freeShip}`,
-    "💳 Parcele em até 12x",
+    "📦 Enviamos para todo o Brasil",
+    "💬 Atendimento rápido pelo WhatsApp",
     "🔄 Troca fácil em 30 dias",
     "🔒 Compra 100% segura",
     "⭐ +10.000 clientes satisfeitos",
@@ -103,7 +114,7 @@ function BenefitsMarquee({ settings }) {
   );
 }
 
-function Showcase({ title, sub, cat, products, onNav, onOpenProduct, onAdd, onWish, wishlist }) {
+function Showcase({ title, sub, cat, products, onNav, onOpenProduct, onOrder }) {
   const list = products.filter((p) => p.cat === cat).slice(0, 6);
   if (list.length === 0) return null;
   return (
@@ -120,7 +131,7 @@ function Showcase({ title, sub, cat, products, onNav, onOpenProduct, onAdd, onWi
       <Rail>
         {list.map((p) => (
           <div className="g2-rail__cell" key={p.id}>
-            <ProductCard p={p} onOpen={onOpenProduct} onAdd={onAdd} onWish={onWish} wished={wishlist.has(p.id)} />
+            <ProductCard p={p} onOpen={onOpenProduct} onAdd={onOrder} />
           </div>
         ))}
       </Rail>
@@ -128,13 +139,14 @@ function Showcase({ title, sub, cat, products, onNav, onOpenProduct, onAdd, onWi
   );
 }
 
-function Banner({ banner, onNav }) {
+function Banner({ banner, products, onNav }) {
   const theme = banner.theme || "dark";
+  const img = banner.image || catImage(products, banner.cat);
   return (
     <section className={"g2-banner g2-banner--" + theme} onClick={() => onNav({ view: "collection", cat: banner.cat || "promocoes" })}>
-      {banner.image ? (
-        <div className="g2-img" style={{ position: "absolute", inset: 0 }}>
-          <img src={banner.image} alt={banner.title} />
+      {img ? (
+        <div className="g2-img g2-banner__img" style={{ position: "absolute", inset: 0 }}>
+          <img src={img} alt={banner.title} />
         </div>
       ) : (
         <Placeholder label="banner" hue={banner.hue || 42} ratio="auto" light={theme === "light" ? 88 : 26} sat={16} style={{ position: "absolute", inset: 0 }} />
@@ -203,10 +215,10 @@ function ReviewsSection({ reviews }) {
 
 function Highlights({ settings }) {
   const items = [
-    ["ENTREGA RÁPIDA", "Frete expresso para todo o Brasil", "M3 6h14M5 6l1 11h12l1-11"],
-    ["COMPRA SEGURA", "Criptografia SSL, seus dados protegidos", "M12 3l8 3v6c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V6z"],
+    ["ENVIO NACIONAL", "Enviamos para todo o Brasil com rastreio", "M3 6h14M5 6l1 11h12l1-11"],
+    ["ATENDIMENTO NO WHATSAPP", "Fale direto com a gente, do início ao fim", "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"],
     ["TROCA FÁCIL", "30 dias para troca sem complicação", "M4 4v6h6M20 20v-6h-6M4 10a8 8 0 0 1 15-2M20 14a8 8 0 0 1-15 2"],
-    ["PARCELE SUA COMPRA", "Em até 12x no cartão de crédito", "M12 1v22M5 7h9a3 3 0 0 1 0 6H7a3 3 0 0 0 0 6h10"],
+    ["COMPRA SEGURA", "Seus dados sempre protegidos", "M12 3l8 3v6c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V6z"],
     ["QUALIDADE GARANTIDA", "Produtos selecionados e testados", "M12 2l3 6 6 1-4.5 4 1 6L12 16l-5.5 3 1-6L3 9l6-1z"],
     ["EMBALAGEM ESPECIAL", "Produtos embalados com cuidado", "M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7"],
   ];
@@ -259,41 +271,19 @@ function BlogSection({ blog }) {
   );
 }
 
-function KitPromo({ data, onKit }) {
-  return (
-    <section className="g2-kitpromo" onClick={onKit}>
-      {data.image ? (
-        <div className="g2-img" style={{ position: "absolute", inset: 0 }}>
-          <img src={data.image} alt={data.title} />
-        </div>
-      ) : (
-        <Placeholder label="lifestyle escuro" hue={42} ratio="auto" light={22} sat={16} style={{ position: "absolute", inset: 0 }} />
-      )}
-      <div className="g2-kitpromo__in">
-        <span className="g2-banner__kicker">{data.kicker}</span>
-        <h2 className="g2-banner__title">{data.title}</h2>
-        <p>{data.sub}</p>
-        <Btn variant="gold" size="lg">
-          {data.ctaLabel}
-        </Btn>
-      </div>
-    </section>
-  );
-}
-
-export function Home({ products, categories, reviews, blog, settings, hero, banner, kitPromo, onNav, onOpenProduct, onAdd, onWish, wishlist, onKit }) {
-  const share = { products, onNav, onOpenProduct, onAdd, onWish, wishlist };
-  const showcaseCats = categories.slice(0, 3);
+export function Home({ products, categories, reviews, blog, settings, hero, banner, onNav, onOpenProduct, onOrder }) {
+  const share = { products, onNav, onOpenProduct, onOrder };
+  const showcaseCats = categories.slice(0, 4);
   return (
     <main className="g2-home">
-      <Hero slides={hero} onNav={onNav} />
+      <Hero slides={hero} products={products} onNav={onNav} />
       <CategoryStrip categories={categories} onNav={onNav} />
       <BenefitsMarquee settings={settings} />
       {showcaseCats[0] && <Showcase title={showcaseCats[0].name.toUpperCase()} sub="Seleção especial da G2 Império." cat={showcaseCats[0].slug} {...share} />}
       {showcaseCats[1] && <Showcase title={showcaseCats[1].name.toUpperCase()} sub="Os favoritos da categoria." cat={showcaseCats[1].slug} {...share} />}
-      <KitPromo data={kitPromo} onKit={onKit} />
+      <Banner banner={banner} products={products} onNav={onNav} />
       {showcaseCats[2] && <Showcase title={showcaseCats[2].name.toUpperCase()} sub="Destaques que você vai amar." cat={showcaseCats[2].slug} {...share} />}
-      <Banner banner={banner} onNav={onNav} />
+      {showcaseCats[3] && <Showcase title={showcaseCats[3].name.toUpperCase()} sub="Novidades que você vai amar." cat={showcaseCats[3].slug} {...share} />}
       <ReviewsSection reviews={reviews} />
       <Highlights settings={settings} />
       <BlogSection blog={blog} />

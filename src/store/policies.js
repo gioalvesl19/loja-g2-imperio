@@ -28,8 +28,7 @@ export const POLICIES = [
     title: "Política de Entrega",
     intro: "Enviamos para todo o Brasil com rapidez e segurança.",
     sections: [
-      ["Prazos", "O prazo varia de 5 a 15 dias úteis conforme a região e o método escolhido (PAC, SEDEX ou transportadora)."],
-      ["Frete grátis", "Frete grátis para pedidos acima de R$ 299. Abaixo disso, o valor é calculado pelo seu CEP."],
+      ["Frete e prazo", "Enviamos para todo o Brasil. O valor do frete e o prazo de entrega são combinados com o atendente pelo WhatsApp, de acordo com o seu endereço."],
       ["Rastreamento", "Assim que o pedido é enviado, você recebe o código de rastreio pelo WhatsApp para acompanhar tudo."],
       ["Retirada", "Também é possível retirar na nossa loja em Anápolis-GO — combine pelo WhatsApp."],
     ],
@@ -39,9 +38,9 @@ export const POLICIES = [
     title: "Promoções",
     intro: "Ofertas, cupons e condições especiais da G2 Império.",
     sections: [
-      ["Cupons", "Cupons de desconto podem ser aplicados na finalização via WhatsApp. Confira o cupom em destaque no topo do site."],
+      ["Cupons", "Cupons de desconto podem ser aplicados na compra via WhatsApp. Confira o cupom em destaque no topo do site."],
       ["Descontos", "Produtos em promoção exibem o preço antigo e o percentual de desconto. As promoções são por tempo limitado ou enquanto durarem os estoques."],
-      ["Kits e Combos", "Monte seu kit e ganhe descontos progressivos: quanto mais itens, maior o desconto."],
+      ["Como aproveitar", "Fale com a gente pelo WhatsApp para conferir os valores atualizados e as condições especiais de cada produto."],
     ],
   },
   {

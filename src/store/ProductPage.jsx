@@ -5,17 +5,15 @@ import { stockInfo, hasPrice } from "../lib/store.js";
 import { Badge, Btn, Placeholder, ProductCard, Stars, WhatsIcon } from "../components/primitives.jsx";
 import { Rail } from "../components/Rail.jsx";
 
-export function ProductPage({ product, products, settings, onNav, onOpenProduct, onAdd, onWish, wishlist, onBuyNow }) {
+export function ProductPage({ product, products, settings, onNav, onOpenProduct, onOrder }) {
   const p = product;
   const [activeImg, setActiveImg] = useState(0);
   const [color, setColor] = useState(0);
-  const [qty, setQty] = useState(1);
   const [tab, setTab] = useState("desc");
 
   useEffect(() => {
     setActiveImg(0);
     setColor(0);
-    setQty(1);
     setTab("desc");
     window.scrollTo(0, 0);
   }, [p && p.id]);
@@ -23,8 +21,6 @@ export function ProductPage({ product, products, settings, onNav, onOpenProduct,
 
   const info = stockInfo(p);
   const priced = hasPrice(p);
-  const isOut = priced && info.status === "out";
-  const stock = Number(p.stock) || 0;
   const unit = p.price;
   const parcelas = Number(p.installments) || 3;
   const semJuros = p.installmentsFree !== false;
@@ -132,10 +128,7 @@ export function ProductPage({ product, products, settings, onNav, onOpenProduct,
       <div className="g2-pdp__top">
         <div className="g2-pdp__gallery">
           <div className="g2-pdp__main">
-            {(() => {
-              const b = isOut ? "out" : p.badge;
-              return b ? <Badge kind={b} /> : null;
-            })()}
+            {p.badge ? <Badge kind={p.badge} /> : null}
             {hasImg ? (
               <div className="g2-img" style={{ borderRadius: 16, aspectRatio: "1/1" }}>
                 <img src={imgs[idx]} alt={p.name} />
@@ -202,60 +195,35 @@ export function ProductPage({ product, products, settings, onNav, onOpenProduct,
           )}
 
           {priced ? (
-            <>
-              <div className={"g2-pdp__stock g2-pdp__stock--" + info.status}>
-                {info.status === "ok" && "✔ Em estoque — pronta entrega"}
-                {info.status === "low" && "🔥 " + info.label}
-                {info.status === "out" && "✖ Produto esgotado no momento"}
+            <div className="g2-pdp__price">
+              <div className="g2-pdp__pricerow">
+                {p.oldPrice && <s>{brl(p.oldPrice)}</s>}
+                <strong>{brl(unit)}</strong>
+                {off > 0 && <span className="g2-pdp__off">-{off}%</span>}
               </div>
-
-              <div className="g2-pdp__price">
-                <div className="g2-pdp__pricerow">
-                  {p.oldPrice && <s>{brl(p.oldPrice)}</s>}
-                  <strong>{brl(unit)}</strong>
-                  {off > 0 && <span className="g2-pdp__off">-{off}%</span>}
-                </div>
-                <span className="g2-pdp__inst">
-                  ou {parcelas}x de {brl(unit / parcelas)}
-                  {semJuros ? " sem juros" : ""}
+              <span className="g2-pdp__inst">
+                ou {parcelas}x de {brl(unit / parcelas)}
+                {semJuros ? " sem juros" : ""}
+              </span>
+              {pixPct > 0 && (
+                <span className="g2-pdp__pix">
+                  {brl(pixPrice)} no Pix ({pixPct}% off)
                 </span>
-                {pixPct > 0 && (
-                  <span className="g2-pdp__pix">
-                    {brl(pixPrice)} no Pix ({pixPct}% off)
-                  </span>
-                )}
-              </div>
-
-              <div className="g2-pdp__buyrow">
-                <QtyStepper value={qty} onChange={setQty} max={stock || undefined} />
-                <Btn variant="gold" full disabled={isOut} onClick={() => onAdd(p, qty, p.colors[color] && p.colors[color][0])}>
-                  {isOut ? "PRODUTO ESGOTADO" : "ADICIONAR AO CARRINHO"}
-                </Btn>
-              </div>
-              <Btn variant="dark" full onClick={() => onBuyNow(p, qty, p.colors[color] && p.colors[color][0])}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: ".5em" }}>
-                  <WhatsIcon /> COMPRAR NO WHATSAPP
-                </span>
-              </Btn>
-            </>
+              )}
+            </div>
           ) : (
-            <>
-              <div className="g2-pdp__price">
-                <div className="g2-pdp__pricerow">
-                  <strong style={{ color: "var(--g2-gold)" }}>Preço sob consulta</strong>
-                </div>
-                <span className="g2-pdp__inst">Consulte valor, cores e condições pelo WhatsApp.</span>
+            <div className="g2-pdp__price">
+              <div className="g2-pdp__pricerow">
+                <strong style={{ color: "var(--g2-gold)" }}>Preço sob consulta</strong>
               </div>
-              <Btn variant="gold" size="lg" full onClick={() => onBuyNow(p, qty, p.colors[color] && p.colors[color][0])}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: ".5em" }}>
-                  <WhatsIcon /> CONSULTAR NO WHATSAPP
-                </span>
-              </Btn>
-            </>
+              <span className="g2-pdp__inst">Consulte valor, cores e disponibilidade pelo WhatsApp.</span>
+            </div>
           )}
-          <button className="g2-pdp__wishbtn" onClick={() => onWish(p)}>
-            {wishlist.has(p.id) ? "♥ Na sua lista de desejos" : "♡ Adicionar à lista de desejos"}
-          </button>
+          <Btn variant="gold" size="lg" full onClick={() => onOrder(p)}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: ".5em" }}>
+              <WhatsIcon /> {priced ? "COMPRAR NO WHATSAPP" : "CONSULTAR NO WHATSAPP"}
+            </span>
+          </Btn>
         </div>
       </div>
 
@@ -284,28 +252,12 @@ export function ProductPage({ product, products, settings, onNav, onOpenProduct,
           <Rail>
             {related.map((r) => (
               <div className="g2-rail__cell" key={r.id}>
-                <ProductCard p={r} onOpen={onOpenProduct} onAdd={(x) => onAdd(x)} onWish={onWish} wished={wishlist.has(r.id)} />
+                <ProductCard p={r} onOpen={onOpenProduct} onAdd={onOrder} />
               </div>
             ))}
           </Rail>
         </section>
       )}
     </main>
-  );
-}
-
-/* stepper local com limite de estoque */
-function QtyStepper({ value, onChange, max }) {
-  const atMax = max != null && value >= max;
-  return (
-    <div className="g2-qty">
-      <button onClick={() => onChange(Math.max(1, value - 1))} aria-label="Diminuir">
-        −
-      </button>
-      <span>{value}</span>
-      <button onClick={() => onChange(value + 1)} disabled={atMax} aria-label="Aumentar">
-        +
-      </button>
-    </div>
   );
 }

@@ -3,19 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { Placeholder } from "./primitives.jsx";
 import { POLICY_LINKS } from "../store/policies.js";
 
-/* subitens ricos para as categorias padrão (apenas cosmético no cabeçalho) */
-const SUBITEMS = {
-  oculos: ["Óculos de Sol Masculino", "Óculos de Sol Feminino", "Óculos Esportivo", "Coleção Premium", "Ver Todos"],
-  relogios: ["Relógios Masculinos", "Relógios Femininos", "Smartwatches", "Relógios Esportivos", "Ver Todos"],
-  "bolsas-malas": ["Bolsas Femininas", "Bolsas Masculinas", "Malas de Viagem", "Necessaires", "Ver Todos"],
-};
-
 function buildNav(categories) {
-  const nav = [{ label: "Coleções", items: ["Lançamentos", "Mais Vendidos", "Promoções", "Kits e Combos"] }];
-  categories.slice(0, 3).forEach((c) => {
-    nav.push({ label: c.name, cat: c.slug, items: SUBITEMS[c.slug] || ["Ver Todos"] });
-  });
-  nav.push({ label: "Mais Produtos", mega: true });
+  const nav = categories.slice(0, 5).map((c) => ({ label: c.name, cat: c.slug }));
   nav.push({ label: "Perguntas Frequentes", view: "faq" });
   return nav;
 }
@@ -74,7 +63,7 @@ export function Logo({ onClick, light, name = "G2 IMPÉRIO" }) {
 }
 
 /* ---------- Cabeçalho ---------- */
-export function Header({ cartCount, wishCount, onNav, onSearch, onCart, onMenu, onWish, onAccount, categories, settings }) {
+export function Header({ onNav, onSearch, onMenu, onAccount, categories, settings }) {
   const [open, setOpen] = useState(null);
   const [hidden, setHidden] = useState(false);
   const [solid, setSolid] = useState(false);
@@ -119,19 +108,6 @@ export function Header({ cartCount, wishCount, onNav, onSearch, onCart, onMenu, 
             </svg>
             <em>Admin</em>
           </button>
-          <button className="g2-iconbtn g2-head__wish" onClick={onWish} aria-label="Lista de desejos">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 21s-7.5-4.6-10-9.3C.4 8.3 2 5 5.2 5c2 0 3.3 1.1 4.1 2.3C10.5 6.1 11.8 5 13.8 5 17 5 18.6 8.3 17 11.7 14.5 16.4 12 21 12 21z" />
-            </svg>
-            {wishCount > 0 && <span className="g2-badgecount g2-badgecount--gold">{wishCount}</span>}
-          </button>
-          <button className="g2-iconbtn g2-head__cart" onClick={onCart} aria-label="Carrinho">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 7h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 7z" />
-              <path d="M9 7a3 3 0 0 1 6 0" />
-            </svg>
-            {cartCount > 0 && <span className="g2-badgecount">{cartCount}</span>}
-          </button>
         </div>
       </div>
 
@@ -140,7 +116,7 @@ export function Header({ cartCount, wishCount, onNav, onSearch, onCart, onMenu, 
           <div className="g2-nav__item" key={i} onMouseEnter={() => setOpen(i)}>
             <button
               className={"g2-nav__link" + (open === i ? " is-open" : "")}
-              onClick={() => (n.view ? onNav({ view: n.view }) : n.cat ? onNav({ view: "collection", cat: n.cat }) : n.label === "Coleções" ? onNav({ view: "collection", cat: "promocoes" }) : null)}
+              onClick={() => (n.view ? onNav({ view: n.view }) : n.cat ? onNav({ view: "collection", cat: n.cat }) : null)}
             >
               {n.label}
             </button>
@@ -309,18 +285,15 @@ export function Footer({ onNav, categories, settings, onAdmin }) {
 }
 
 /* ---------- Barra inferior (mobile) ---------- */
-export function BottomBar({ view, cartCount, onNav, onSearch, onKit, onCart, onAccount }) {
-  const Item = ({ icon, label, active, onClick, badge, center }) => (
+export function BottomBar({ view, onNav, onSearch, onAccount, onWhats }) {
+  const Item = ({ icon, label, active, onClick, center }) => (
     <button className={"g2-bb__item" + (active ? " is-active" : "") + (center ? " g2-bb__item--center" : "")} onClick={onClick}>
-      <span className="g2-bb__ico">
-        {icon}
-        {badge > 0 && <em>{badge}</em>}
-      </span>
+      <span className="g2-bb__ico">{icon}</span>
       <span className="g2-bb__lbl">{label}</span>
     </button>
   );
   return (
-    <nav className="g2-bb">
+    <nav className="g2-bb g2-bb--4">
       <Item
         label="Início"
         active={view === "home"}
@@ -343,12 +316,12 @@ export function BottomBar({ view, cartCount, onNav, onSearch, onKit, onCart, onA
         }
       />
       <Item
-        label="Kit Rápido"
+        label="WhatsApp"
         center
-        onClick={onKit}
+        onClick={onWhats}
         icon={
           <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-            <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" />
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm-3.6 6.07c.17 0 .34.01.49.02.16.01.37-.06.58.44.22.53.74 1.83.8 1.96.06.13.1.29.02.46-.08.17-.12.28-.24.43-.12.15-.26.33-.37.44-.12.13-.25.27-.11.51.14.25.62 1.02 1.33 1.65.91.81 1.68 1.06 1.93 1.18.24.12.39.1.53-.06.14-.16.61-.71.77-.96.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.11.06.63-.16 1.24-.22.61-1.29 1.17-1.79 1.24-.46.07-1.03.1-1.66-.1-.4-.13-.92-.3-1.58-.59-2.78-1.2-4.6-4-4.74-4.18-.14-.19-1.13-1.5-1.13-2.87 0-1.36.72-2.03.97-2.31.26-.28.56-.35.75-.35z" />
           </svg>
         }
       />
@@ -359,17 +332,6 @@ export function BottomBar({ view, cartCount, onNav, onSearch, onKit, onCart, onA
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="8" r="4" />
             <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
-          </svg>
-        }
-      />
-      <Item
-        label="Carrinho"
-        badge={cartCount}
-        onClick={onCart}
-        icon={
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M5 7h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 7z" />
-            <path d="M9 7a3 3 0 0 1 6 0" />
           </svg>
         }
       />

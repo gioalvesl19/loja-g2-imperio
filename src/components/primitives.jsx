@@ -119,7 +119,7 @@ export function Qty({ value, onChange, small, max }) {
 }
 
 /* ---------- Card de produto ---------- */
-export function ProductCard({ p, onOpen, onAdd, onWish, wished }) {
+export function ProductCard({ p, onOpen, onAdd }) {
   const [hover, setHover] = useState(false);
   const badge = displayBadge(p);
   const info = stockInfo(p);
@@ -134,7 +134,6 @@ export function ProductCard({ p, onOpen, onAdd, onWish, wished }) {
     >
       <div className="g2-card__media">
         {badge && <Badge kind={badge} />}
-        <Heart active={wished} onClick={() => onWish && onWish(p)} />
         {p.image ? (
           <div className="g2-img" style={{ height: "100%" }}>
             <img src={p.image} alt={p.name} loading="lazy" />
@@ -144,14 +143,12 @@ export function ProductCard({ p, onOpen, onAdd, onWish, wished }) {
         )}
         <div className={"g2-card__addbar" + (hover ? " is-shown" : "")}>
           <button
-            disabled={isOut}
             onClick={(e) => {
               e.stopPropagation();
-              if (!priced) onAdd && onAdd(p);
-              else if (!isOut) onAdd && onAdd(p);
+              onAdd && onAdd(p);
             }}
           >
-            {!priced ? "CONSULTAR PREÇO" : isOut ? "ESGOTADO" : "+ ADICIONAR"}
+            {!priced ? "CONSULTAR PREÇO" : "COMPRAR NO WHATSAPP"}
           </button>
         </div>
       </div>

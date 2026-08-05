@@ -3,7 +3,7 @@ import { useState } from "react";
 import { brl } from "../lib/format.js";
 import { Btn, Placeholder, ProductCard } from "../components/primitives.jsx";
 
-export function Collection({ cat, title, products, categories, onNav, onOpenProduct, onAdd, onWish, wishlist }) {
+export function Collection({ cat, title, products, categories, onNav, onOpenProduct, onOrder }) {
   const catMeta = categories.find((c) => c.slug === cat);
   const isPromo = cat === "promocoes";
   const base = isPromo ? products.filter((p) => p.badge === "promo" || p.oldPrice) : products.filter((p) => p.cat === cat);
@@ -128,7 +128,7 @@ export function Collection({ cat, title, products, categories, onNav, onOpenProd
           ) : (
             <div className="g2-grid">
               {list.map((p) => (
-                <ProductCard key={p.id} p={p} onOpen={onOpenProduct} onAdd={onAdd} onWish={onWish} wished={wishlist.has(p.id)} />
+                <ProductCard key={p.id} p={p} onOpen={onOpenProduct} onAdd={onOrder} />
               ))}
             </div>
           )}

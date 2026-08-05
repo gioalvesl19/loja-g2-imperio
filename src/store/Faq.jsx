@@ -24,25 +24,25 @@ const FAQ_GROUPS = [
   {
     title: "Pedidos & Entrega",
     items: [
-      ["Como rastrear meu pedido?", 'Assim que seu pedido é enviado, você recebe o código de rastreio por e-mail e WhatsApp. Também é possível acompanhar tudo na sua conta, em "Meus pedidos".'],
-      ["Qual o prazo de entrega?", "O prazo é de 5 a 15 dias úteis, dependendo da sua região e do método escolhido: PAC (10–15 dias), SEDEX (3–5 dias) ou transportadora (calculado por CEP)."],
-      ["Tem frete grátis?", "Sim! Frete grátis para todo o Brasil em pedidos acima de R$ 299. Abaixo disso, o valor é calculado automaticamente no carrinho de acordo com o seu CEP."],
+      ["Como faço meu pedido?", "É simples: escolha o produto e toque em “Consultar/Comprar no WhatsApp”. Você fala direto com um atendente, que confirma valor, disponibilidade e formas de pagamento e finaliza tudo por lá."],
+      ["Como funciona o frete e o prazo?", "Enviamos para todo o Brasil. O valor do frete e o prazo são combinados com o atendente pelo WhatsApp, de acordo com o seu endereço."],
+      ["Como acompanho meu pedido?", "Assim que o pedido é enviado, você recebe o código de rastreio pelo WhatsApp e a gente acompanha a entrega com você por lá."],
     ],
   },
   {
     title: "Pagamento",
     items: [
-      ["Quais formas de pagamento são aceitas?", "Cartão de crédito e débito (Visa, Mastercard, Elo, Amex), Pix e boleto. No Pix você ganha 5% de desconto à vista."],
-      ["Como parcelar minha compra?", "Em até 3x sem juros no cartão e até 12x com juros da operadora. O simulador de parcelas aparece na finalização."],
+      ["Quais formas de pagamento são aceitas?", "Cartão de crédito e débito (Visa, Mastercard, Elo, Amex), Pix e boleto. No Pix costumamos ter desconto à vista — confirme com o atendente."],
+      ["Dá para parcelar?", "Sim! As condições de parcelamento são combinadas com o atendente pelo WhatsApp no momento da compra."],
       ["Meus dados de pagamento estão seguros?", "Sim. Todo o pedido é finalizado com um atendente pelo WhatsApp, que envia um link ou dados de pagamento seguros — nunca pedimos senhas ou dados sensíveis por mensagem."],
     ],
   },
   {
-    title: "Trocas, Garantia & Assinatura",
+    title: "Trocas & Garantia",
     items: [
       ["Posso trocar ou devolver um produto?", "Sim, você tem 30 dias para trocar ou devolver. O item deve estar sem uso e na embalagem original. Em caso de defeito, o frete de devolução é por nossa conta."],
       ["O produto tem garantia?", "Todos os produtos têm 90 dias de garantia contra defeitos de fabricação, além da garantia legal prevista no Código de Defesa do Consumidor."],
-      ["Como funciona a assinatura?", "Para itens de reposição (garrafas, fones e mais), você pode assinar e economizar: 10% no plano mensal ou 8% no bimestral, cancelável a qualquer momento."],
+      ["Como falo com o atendimento?", "Pelo WhatsApp! É só tocar no botão de WhatsApp em qualquer página. Atendemos de segunda a sexta, das 9h às 18h."],
     ],
   },
 ];
